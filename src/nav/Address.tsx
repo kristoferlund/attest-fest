@@ -1,8 +1,8 @@
 import { useAccount, useConnect, useEnsName } from "wagmi";
 
+import { AccountDialog } from "./AccountDialog";
 import { Button } from "../components/Button";
 import { shortenEthAddress } from "../util/string";
-import { AccountDialog } from "./AccountDialog";
 import { useState } from "react";
 
 export function Address() {
@@ -22,7 +22,7 @@ export function Address() {
   return (
     <>
       <div
-        className="px-5 py-3 border rounded-full cursor-pointer hover:bg-gray-100"
+        className="px-5 py-3 border cursor-pointer rounded-xl hover:bg-theme2"
         onClick={() => setIsOpen(true)}
       >
         {ensName ?? shortenEthAddress(address)}

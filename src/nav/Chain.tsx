@@ -45,7 +45,7 @@ export function Chain() {
   return (
     <div className="relative">
       <Listbox value={chain.id} onChange={(c) => switchNetwork?.(c)}>
-        <Listbox.Button className="px-5 py-3 border rounded-full cursor-pointer hover:bg-gray-100">
+        <Listbox.Button className="px-5 py-3 border cursor-pointer rounded-xl hover:bg-theme2">
           {isChainIdSupported(chain.id) ? (
             chain.name
           ) : (
@@ -55,12 +55,12 @@ export function Chain() {
             </div>
           )}
         </Listbox.Button>
-        <Listbox.Options className="absolute p-2 border left-[-82px] top-16 rounded-xl">
+        <Listbox.Options className="absolute left-0 p-2 border top-14 rounded-xl">
           {supportedChains.map((chain) => (
             <Listbox.Option
               key={chain.id}
               value={chain.id}
-              className="flex items-center justify-between px-3 py-1 rounded-md w-44 ui-active:bg-blue-500 ui-active:text-white ui-not-active:bg-white ui-not-active:text-black whitespace-nowrap"
+              className="flex items-center justify-between px-3 py-1 rounded-md w-44 ui-active:bg-theme3 ui-active:text-theme1 whitespace-nowrap"
             >
               {chain.name}
               <FontAwesomeIcon

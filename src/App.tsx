@@ -84,6 +84,8 @@ function App() {
       <Navbar />
       <div className="flex items-center justify-center pt-24">
         <div className="flex flex-col items-center justify-center w-1/2 gap-5">
+          <div className="text-3xl font-press-start">Attest Fest</div>
+          <div className="text-center">Create many attestations at a time.</div>
           {chain?.id && (
             <SafeContextProvider address={selectedSafeAddress}>
               <AppInner />
