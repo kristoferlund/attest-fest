@@ -4,7 +4,7 @@ import { AttestDialog } from "../safe/components/AttestDialog";
 import CsvEditor from "../eas/components/CsvEditor";
 import { SchemaField } from "../eas/types/schema-field.type";
 import { SchemaPills } from "../eas/components/SchemaPills";
-import { isSchemaFieldTypeName } from "../eas/utils/is-schema-field-type-name";
+import { isSchemaFieldTypeName } from "../eas/utils/isSchemaFieldTypeName";
 import { useEas } from "../eas/hooks/useEas";
 import { useStateStore } from "../zustand/hooks/useStateStore";
 
@@ -18,7 +18,6 @@ export function CsvEditView() {
   // Global state
   const csv = useStateStore((state) => state.csv);
   const csvError = useStateStore((state) => state.csvError);
-  // const editorCsv = useStateStore((state) => state.editorCsv);
 
   function addRecipientToSchema() {
     if (!schemaRecord) return;
@@ -59,7 +58,6 @@ export function CsvEditView() {
       <SchemaPills />
 
       <CsvEditor
-        // csv={editorCsv}
         onChange={handleEditorChange}
         onCsvError={(csvError) => useStateStore.setState({ csvError })}
       />

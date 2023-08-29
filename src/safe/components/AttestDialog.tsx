@@ -36,7 +36,7 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
   function parseCsv() {
     if (!csv) return;
     setParsedCsv(
-      parse(csv, {
+      parse(csv.trim(), {
         relax_column_count: true,
         relax_quotes: true,
         trim: true,
@@ -81,7 +81,7 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
       {/* Full-screen container to center the panel */}
       <div className="fixed inset-0 flex items-center justify-center">
         {/* The actual dialog panel  */}
-        <Dialog.Panel className="flex flex-col gap-10 p-5 mx-auto bg-white border w-96 rounded-xl">
+        <Dialog.Panel className="flex flex-col gap-10 mx-auto bg-white border p-7 w-96 rounded-xl">
           <Dialog.Title className="flex justify-between text-2xl font-medium">
             Attest
             <button onClick={close}>
@@ -121,7 +121,7 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
               <div className="px-10 text-center">
                 Submitting will propose a Safe transaction to create{" "}
                 <strong>{parsedCsv.length}</strong> attestation
-                {parseCsv.length > 1 && "s"}.
+                {parsedCsv.length > 1 && "s"}.
               </div>
               <div className="flex justify-center gap-5">
                 <button onClick={close}>

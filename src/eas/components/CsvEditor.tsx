@@ -84,6 +84,7 @@ const CsvEditor = ({ onChange, onCsvError }: CsvEditorProps) => {
 
   const updateCsvContent = (content: string, schemaData: SchemaField[]) => {
     try {
+      let csvHasErrors = false;
       const rows = parseCsvAndValidate(content, schemaData);
       Transforms.delete(editor, {
         at: {
@@ -95,11 +96,15 @@ const CsvEditor = ({ onChange, onCsvError }: CsvEditorProps) => {
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         if (!("children" in row)) continue;
+        console.log(
+          row.children.filter((r) => (r as CsvText).text !== ",").length
+        );
         if (
           Array.isArray(row.children) &&
           row.children.filter((r) => (r as CsvText).text !== ",").length <
             schemaData.length
         ) {
+          csvHasErrors = true;
           onCsvError(
             new Error(`Invalid CSV: Wrong number of columns, row: ${i + 1}`)
           );
@@ -107,13 +112,14 @@ const CsvEditor = ({ onChange, onCsvError }: CsvEditorProps) => {
         for (let j = 0; j < row.children.length; j++) {
           const cell = row.children[j];
           if ("error" in cell && cell.error) {
+            csvHasErrors = true;
             onCsvError(
               new Error("CSV contains errors, see error highlighting.")
             );
           }
         }
       }
-      onCsvError(undefined);
+      !csvHasErrors && onCsvError(undefined);
     } catch (error) {
       console.error(error);
       onCsvError(error as Error);

@@ -15,7 +15,7 @@ import { useProvider, useSigner } from "../../wagmi/hooks/useSigner";
 
 import { EasContext } from "../types/eas-context-value.type";
 import { SchemaField } from "../types/schema-field.type";
-import { isSchemaFieldTypeName } from "../utils/is-schema-field-type-name";
+import { isSchemaFieldTypeName } from "../utils/isSchemaFieldTypeName";
 import { parse } from "csv-parse/sync";
 import { useEasConfig } from "../hooks/useEasConfig";
 import { useNetwork } from "wagmi";

@@ -11,7 +11,10 @@ type AttestDialogExecuteProps = {
   onClose?: () => void;
 };
 
-export function AttestDialogExecute({ safeTxHash }: AttestDialogExecuteProps) {
+export function AttestDialogExecute({
+  safeTxHash,
+  onClose,
+}: AttestDialogExecuteProps) {
   const { moreConfirmationsRequired, executeTransaction, executeState } =
     useSafeTransaction({
       safeTxHash,
@@ -52,7 +55,7 @@ export function AttestDialogExecute({ safeTxHash }: AttestDialogExecuteProps) {
             executed.
           </div>
           <div className="flex justify-center gap-5">
-            <button onClick={close}>Close</button>
+            <button onClick={onClose}>Close</button>
 
             <button
               onClick={() => executeTransaction && executeTransaction()}
