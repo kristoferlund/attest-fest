@@ -17,6 +17,7 @@ export function SchemaInput({ onChange, value }: SchemaInputProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onClick={handleInputClick}
+        className="p-1 ml-1 border-b"
       />
     </div>
   );

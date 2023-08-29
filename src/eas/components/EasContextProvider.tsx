@@ -13,7 +13,6 @@ import {
 import React, { ReactNode, useEffect, useState } from "react";
 import { useProvider, useSigner } from "../../wagmi/hooks/useSigner";
 
-import { BigNumber } from "ethers";
 import { EasContext } from "../types/eas-context-value.type";
 import { SchemaField } from "../types/schema-field.type";
 import { isSchemaFieldTypeName } from "../utils/is-schema-field-type-name";

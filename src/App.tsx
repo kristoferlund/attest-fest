@@ -3,6 +3,7 @@ import { EasContextProvider } from "./eas/components/EasContextProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Navbar } from "./nav/Navbar";
 import { SafeContextProvider } from "./safe/components/SafeContextProvider";
+import { SafeInformation } from "./safe/components/SafeInformation";
 import { SafeSelect } from "./safe/components/SafeSelect";
 import { SchemaFormView } from "./views/SchemaForm";
 import { SchemaInformation } from "./eas/components/SchemaInformation";
@@ -17,7 +18,7 @@ import { useStateStore } from "./zustand/hooks/useStateStore";
 
 function AppInner() {
   //Hooks
-  const { safes } = useSafe();
+  const { safes, owners } = useSafe();
 
   // Global state
   const selectedSafeAddress = useStateStore(
@@ -31,8 +32,8 @@ function AppInner() {
   // CSV is valid if it is not undefined, does not start with a #, and has no errors
   const isCsvValid = typeof csv !== "undefined" && !csvError && csv[0] !== "#";
 
+  // If url has a safeTxHash, show the transaction view
   const safeTxHash = window.location.pathname.split("/")[1];
-
   if (safeTxHash) {
     return <Transaction safeTxHash={safeTxHash} />;
   }
@@ -49,13 +50,16 @@ function AppInner() {
                   useStateStore.setState({ selectedSafeAddress: address })
                 }
               />
-              {selectedSafeAddress && (
-                <SchemaInput
-                  value={schemaUid}
-                  onChange={(schemaUid) =>
-                    useStateStore.setState({ schemaUid })
-                  }
-                />
+              {selectedSafeAddress && owners?.length > 0 && (
+                <>
+                  <SafeInformation />
+                  <SchemaInput
+                    value={schemaUid}
+                    onChange={(schemaUid) =>
+                      useStateStore.setState({ schemaUid })
+                    }
+                  />
+                </>
               )}
 
               {schemaUid && (

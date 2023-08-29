@@ -11,10 +11,18 @@ import { isChainIdSupported } from "../wagmi/isChainIdSupported";
 import { supportedChains } from "../wagmi/wagmi.config";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
+import { useStateStore } from "../zustand/hooks/useStateStore";
 
 export function Chain() {
   const { chain } = useNetwork();
   const { error, isLoading, switchNetwork } = useSwitchNetwork();
+
+  // Clear selected safe on chain switch
+  function clearSelectedSafe() {
+    if (!isLoading) return;
+    useStateStore.setState({ selectedSafeAddress: undefined });
+  }
+  useEffect(clearSelectedSafe, [isLoading]);
 
   useEffect(() => {
     if (error) {
