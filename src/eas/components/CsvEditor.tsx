@@ -195,7 +195,7 @@ const CsvEditor = ({ onChange, onCsvError }: CsvEditorProps) => {
       onDragOver={handleDragOver}
       onDragEnter={handleDragEnter}
       onDrop={handleFileDrop}
-      className="relative flex flex-col items-center justify-center gap-5"
+      className="relative flex flex-col items-center justify-center w-full gap-5"
     >
       <Slate
         editor={editor}
@@ -206,7 +206,8 @@ const CsvEditor = ({ onChange, onCsvError }: CsvEditorProps) => {
           <FontAwesomeIcon
             icon={faCircleNotch}
             spin
-            className="absolute top-0 right-0 p-5"
+            className="absolute top-0 right-0 z-10 p-5 bg-opacity-50 rounded-full"
+            size="2x"
           />
         )}
 
@@ -227,7 +228,7 @@ const CsvEditor = ({ onChange, onCsvError }: CsvEditorProps) => {
           renderLeaf={CsvEditorLeaf}
           onKeyDown={handleKeyPress}
           onPaste={() => setContentChanged(true)}
-          className="border-2 border-gray-300 w-[800px] h-[300px] p-5 overflow-auto"
+          className="border-2 border-theme4 bg-theme1 w-full md:w-[700px] h-[300px] p-5 overflow-auto focus:border-b-2 focus:outline-none caret-theme4 focus:bg-theme2"
           spellCheck={false}
         />
       </Slate>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { AttestDialog } from "../safe/components/AttestDialog";
+import { Button } from "../components/Button";
 import CsvEditor from "../eas/components/CsvEditor";
 import { SchemaField } from "../eas/types/schema-field.type";
 import { SchemaPills } from "../eas/components/SchemaPills";
@@ -64,13 +65,13 @@ export function CsvEditView() {
 
       {csvError && <div className="text-red-500">{csvError.message}</div>}
 
-      <button
-        className="btn"
+      <Button
         onClick={() => setAttestDialogOpen(true)}
         disabled={buttonDisabled}
+        className="mb-10"
       >
         Submit
-      </button>
+      </Button>
       {attestDialogOpen && (
         <AttestDialog
           open={attestDialogOpen}

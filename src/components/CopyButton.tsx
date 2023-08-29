@@ -19,7 +19,7 @@ export function CopyButton({
         toast.success("Copied to clipboard");
       }}
     >
-      <FontAwesomeIcon icon={faCopy} className="w-4" />
+      <FontAwesomeIcon icon={faCopy} className="w-4 h-4" />
     </button>
   );
 }

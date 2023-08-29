@@ -11,13 +11,15 @@ export function SchemaInput({ onChange, value }: SchemaInputProps) {
 
   return (
     <div>
-      Schema UID:
+      <div className="w-full text-center md:w-auto md:text-left md:inline-block">
+        Schema UID:
+      </div>
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onClick={handleInputClick}
-        className="p-2 ml-1 bg-transparent border-b-2 border-theme4 w-96 text-ellipsis focus:bg-theme2 focus:border-b-2 focus:outline-none caret-theme4"
+        className="w-full p-2 ml-1 bg-transparent border-b-2 border-theme4 md:w-96 text-ellipsis focus:bg-theme2 focus:border-b-2 focus:outline-none caret-theme4"
       />
     </div>
   );

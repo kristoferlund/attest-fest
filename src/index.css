@@ -2,8 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* @apply bg-gradient-to-bl from-theme1 to-theme3; */
+
+html {
+  @apply bg-theme1;
+}
+
 body {
-  @apply text-xs font-press-start bg-theme1 text-theme4;
+  @apply text-xs font-press-start text-theme4 focus:outline-none focus-visible:outline-none;
 }
 
 .border {

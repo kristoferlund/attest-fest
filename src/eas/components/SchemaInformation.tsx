@@ -7,7 +7,9 @@ export function SchemaInformation() {
 
   return (
     <>
-      {schemaRecordIsLoading && <FontAwesomeIcon icon={faCircleNotch} spin />}
+      {schemaRecordIsLoading && (
+        <FontAwesomeIcon icon={faCircleNotch} spin size="2x" />
+      )}
 
       {schemaRecordError && <div>{schemaRecordError.message}</div>}
 

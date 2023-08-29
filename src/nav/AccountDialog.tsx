@@ -28,7 +28,7 @@ export function AccountDialog({ open, close }: AccountDialogProps) {
           <Dialog.Title className="flex justify-between text-xl font-medium">
             Account
             <button onClick={close}>
-              <FontAwesomeIcon icon={faXmark} className="w-4" />
+              <FontAwesomeIcon icon={faXmark} className="w-6 h-6" />
             </button>
           </Dialog.Title>
 
@@ -40,7 +40,7 @@ export function AccountDialog({ open, close }: AccountDialogProps) {
                 disconnect();
               }}
             >
-              <FontAwesomeIcon icon={faRightFromBracket} className="w-4" />
+              <FontAwesomeIcon icon={faRightFromBracket} className="w-4 h-4" />
             </button>
           </div>
         </Dialog.Panel>

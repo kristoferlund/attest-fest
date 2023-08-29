@@ -1,8 +1,9 @@
-import { Dialog } from "@headlessui/react";
-import { useAccount, useDisconnect, useEnsName } from "wagmi";
-import { shortenEthAddress } from "../util/string";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightFromBracket, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useAccount, useDisconnect, useEnsName } from "wagmi";
+
+import { Dialog } from "@headlessui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { shortenEthAddress } from "../util/string";
 
 type AccountDialogProps = {
   open: boolean;
@@ -27,7 +28,7 @@ export function AccountDialog({ open, close }: AccountDialogProps) {
           <Dialog.Title className="flex justify-between text-2xl font-medium">
             Account
             <button onClick={close}>
-              <FontAwesomeIcon icon={faXmark} className="w-4" />
+              <FontAwesomeIcon icon={faXmark} className="w-6 h-6" />
             </button>
           </Dialog.Title>
 
@@ -39,7 +40,7 @@ export function AccountDialog({ open, close }: AccountDialogProps) {
                 disconnect();
               }}
             >
-              <FontAwesomeIcon icon={faRightFromBracket} className="w-4" />
+              <FontAwesomeIcon icon={faRightFromBracket} className="w-4 h-4" />
             </button>
           </div>
         </Dialog.Panel>

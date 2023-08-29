@@ -37,7 +37,7 @@ export function Chain() {
   if (isLoading) {
     return (
       <div className="px-5 py-3 border rounded-full">
-        <FontAwesomeIcon icon={faCircleNotch} spin />
+        <FontAwesomeIcon icon={faCircleNotch} spin size="2x" />
       </div>
     );
   }
@@ -45,7 +45,7 @@ export function Chain() {
   return (
     <div className="relative">
       <Listbox value={chain.id} onChange={(c) => switchNetwork?.(c)}>
-        <Listbox.Button className="px-5 py-3 border cursor-pointer rounded-xl hover:bg-theme2">
+        <Listbox.Button className="w-full px-5 py-3 border cursor-pointer rounded-xl hover:bg-theme2 sm:inline-block">
           {isChainIdSupported(chain.id) ? (
             chain.name
           ) : (
@@ -55,7 +55,7 @@ export function Chain() {
             </div>
           )}
         </Listbox.Button>
-        <Listbox.Options className="absolute left-0 p-2 border top-14 rounded-xl">
+        <Listbox.Options className="absolute left-0 p-2 border top-14 rounded-xl bg-theme2">
           {supportedChains.map((chain) => (
             <Listbox.Option
               key={chain.id}

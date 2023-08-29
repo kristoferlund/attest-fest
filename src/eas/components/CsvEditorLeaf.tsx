@@ -15,7 +15,7 @@ export const CsvEditorLeaf = ({
   leaf,
 }: CsvEditorLeafProps) => {
   if (leaf.type === "value") {
-    const errorClass = leaf.error?.error ? "bg-red-200" : "";
+    const errorClass = leaf.error?.error ? "bg-red-500 text-white" : "";
     const errorTitle = leaf.error?.error || "";
     return (
       <span {...attributes} className={errorClass} title={errorTitle}>

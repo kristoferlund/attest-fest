@@ -6,6 +6,7 @@ import {
 import { useEffect, useState } from "react";
 
 import { AttestDialogExecute } from "./AttestDialogExecute";
+import { Button } from "../../components/Button";
 import { CopyButton } from "../../components/CopyButton";
 import { Dialog } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -81,11 +82,11 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
       {/* Full-screen container to center the panel */}
       <div className="fixed inset-0 flex items-center justify-center">
         {/* The actual dialog panel  */}
-        <Dialog.Panel className="flex flex-col gap-10 mx-auto bg-white border p-7 w-96 rounded-xl">
+        <Dialog.Panel className="flex flex-col gap-10 p-5 mx-auto border bg-theme1 w-96 rounded-xl">
           <Dialog.Title className="flex justify-between text-2xl font-medium">
             Attest
             <button onClick={close}>
-              <FontAwesomeIcon icon={faXmark} className="w-4" />
+              <FontAwesomeIcon icon={faXmark} className="w-6 h-6" />
             </button>
           </Dialog.Title>
 
@@ -93,7 +94,9 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
           safeTransactionState.status === "created" ? (
             <div className="flex flex-col items-center gap-5">
               <FontAwesomeIcon icon={faCheckCircle} size="2x" />
-              <div>Transaction proposed and signed!</div>
+              <div className="text-center">
+                Transaction proposed and signed!
+              </div>
               <div>
                 <a
                   href={`https://app.safe.global/transactions/tx?id=multisig_${safeAddress}_${safeTransactionState?.txHash}&safe=${safeConfig?.safeChainAbbreviation}:${safeAddress}`}
@@ -124,14 +127,14 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
                 {parsedCsv.length > 1 && "s"}.
               </div>
               <div className="flex justify-center gap-5">
-                <button onClick={close}>
+                <Button onClick={close}>
                   {safeTransactionState?.status === "created"
                     ? "Close"
                     : "Cancel"}
-                </button>
+                </Button>
 
                 {submitButtonVisible && (
-                  <button
+                  <Button
                     onClick={() => {
                       createAttestationsTransaction &&
                         createAttestationsTransaction(csv);
@@ -143,10 +146,11 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
                         icon={faCircleNotch}
                         className="w-4 mr-2"
                         spin
+                        size="2x"
                       />
                     )}
                     <>{submitButtonText()}</>
-                  </button>
+                  </Button>
                 )}
               </div>
             </>

@@ -66,6 +66,7 @@ export function AttestDialogExecute({
                   icon={faCircleNotch}
                   className="w-4 mr-2"
                   spin
+                  size="2x"
                 />
               )}
               {executeState?.state === "executed" && (

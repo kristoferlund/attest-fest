@@ -1,13 +1,21 @@
 type ButtonProps = {
   children: React.ReactNode;
+  disabled?: boolean;
   onClick?: () => void;
+  className?: string;
 };
 
-export function Button({ children, onClick }: ButtonProps) {
+export function Button({
+  children,
+  onClick,
+  disabled,
+  className,
+}: ButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="px-5 py-3 border rounded-full border-theme4"
+      className={`px-5 py-3 border bg-theme1 rounded-xl border-theme4 hover:bg-theme2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-theme1 ${className}`}
+      disabled={disabled}
     >
       {children}
     </button>
