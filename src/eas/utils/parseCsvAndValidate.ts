@@ -30,7 +30,6 @@ export function parseCsvAndValidate(
 
     for (let colIndex = 0; colIndex < row.length; colIndex++) {
       const col = row[colIndex];
-      console.log("col", col);
       colIndex > 0 && resRow.push({ type: "comma", text: "," });
       if (colIndex < schema.length) {
         const [parsedValue, error] = validateEditorValue(

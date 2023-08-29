@@ -20,7 +20,7 @@ export function Chain() {
   // Clear selected safe on chain switch
   function clearSelectedSafe() {
     if (!isLoading) return;
-    useStateStore.setState({ selectedSafeAddress: undefined });
+    useStateStore.setState({ selectedSafeAddress: "" });
   }
   useEffect(clearSelectedSafe, [isLoading]);
 

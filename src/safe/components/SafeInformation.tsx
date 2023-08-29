@@ -9,7 +9,7 @@ export function SafeInformation() {
 
   return (
     <div className="text-center">
-      Creating attestations using this Safe requires the signature of:{" "}
+      Creating attestations requires the signature of{" "}
       <strong>{threshold}</strong> out of{" "}
       <strong>{owners.length} owners</strong>.
     </div>

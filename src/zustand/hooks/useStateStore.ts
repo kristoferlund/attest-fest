@@ -8,7 +8,7 @@ type GlobalState = {
   schema?: SchemaField[];
   csv: string;
   csvError?: Error;
-  editorCsv: string;
+  // editorCsv: string;
   showTransaction?: boolean;
 };
 
@@ -18,7 +18,7 @@ export const useStateStore = create(
       selectedSafeAddress: "",
       schemaUid: "",
       csv: "",
-      editorCsv: "",
+      // editorCsv: "",
       showTransaction: false,
     }),
     {

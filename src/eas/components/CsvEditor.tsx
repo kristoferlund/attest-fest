@@ -33,12 +33,9 @@ function serializeToCsv(nodes: Node[]): string {
     let row = "";
     for (let j = 0; j < node.children.length; j++) {
       const cell = node.children[j];
-      console.log("serializeToCsv", cell);
       if ("text" in cell) {
         let text = cell.text;
         if (text.startsWith('"') && text.endsWith('"')) {
-          // console.log([text]);
-          // console.log(stringify([text, text]));
           text = text.slice(1, -1);
           text = text.replace(/"/g, '""');
           row += `"${text}"`;
@@ -50,39 +47,7 @@ function serializeToCsv(nodes: Node[]): string {
     content += row + "\n";
   }
 
-  console.log("serializeToCsv", content);
   return content;
-  // return nodes.map(Node.string).join("\n");
-
-  // const arr = [];
-  // for (let i = 0; i < nodes.length; i++) {
-  //   const node = nodes[i];
-  //   if (!("children" in node)) continue;
-  //   const row = [];
-  //   for (let j = 0; j < node.children.length; j++) {
-  //     const cell = node.children[j];
-  //     console.log("serializeToCsv", cell);
-  //     // Only include CsvText nodes
-  //     if ("type" in cell && cell.type === "value") {
-  //       let text = cell.text;
-  //       if (text.startsWith('"') && text.endsWith('"')) {
-  //         // Remove leading and trailing quotes
-  //         text = text.slice(1, -1);
-  //         row.push(text);
-  //       } else if (text.includes(",")) {
-  //         // Split string into multiple values if it contains a comma
-  //         const values = text.split(",");
-  //         row.push(...values);
-  //       } else {
-  //         row.push(text);
-  //       }
-  //     }
-  //   }
-  //   arr.push(row);
-  // }
-
-  // console.log("serializeToCsv", arr);
-  // return stringify(arr, { quoted_empty: true });
 }
 
 const IGNORED_KEYS = [
@@ -100,12 +65,12 @@ const IGNORED_KEYS = [
 ];
 
 type CsvEditorProps = {
-  csv: string;
+  // csv: string;
   onChange: (csvData: string) => void;
   onCsvError: (error?: Error) => void;
 };
 
-const CsvEditor = ({ csv, onChange, onCsvError }: CsvEditorProps) => {
+const CsvEditor = ({ onChange, onCsvError }: CsvEditorProps) => {
   // Local state
   const [isParsing, setIsParsing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -118,7 +83,6 @@ const CsvEditor = ({ csv, onChange, onCsvError }: CsvEditorProps) => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
   const updateCsvContent = (content: string, schemaData: SchemaField[]) => {
-    console.log("updateCsvContent");
     try {
       const rows = parseCsvAndValidate(content, schemaData);
       Transforms.delete(editor, {
@@ -159,16 +123,14 @@ const CsvEditor = ({ csv, onChange, onCsvError }: CsvEditorProps) => {
 
   const debouncedUpdate = useRef(
     debounce((newValue: Descendant[], schemaData: SchemaField[]) => {
-      console.log("debouncedUpdate");
       updateCsvContent(serializeToCsv(newValue), schemaData);
-    }, 3000)
+    }, 1500)
   ).current;
 
   const handleContentChange = useCallback(
     (newValue: Descendant[]) => {
-      debouncedUpdate.cancel();
       if (hasContentChanged && schema) {
-        console.log("handleContentChange");
+        debouncedUpdate.cancel();
         onChange(serializeToCsv(newValue));
         debouncedUpdate(newValue, schema);
         setIsParsing(true);
@@ -231,9 +193,7 @@ const CsvEditor = ({ csv, onChange, onCsvError }: CsvEditorProps) => {
     >
       <Slate
         editor={editor}
-        initialValue={
-          csv ? parseCsvAndValidate(csv, schema) : editorInitialValue
-        }
+        initialValue={editorInitialValue}
         onChange={handleContentChange}
       >
         {isParsing && (

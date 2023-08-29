@@ -55,7 +55,6 @@ export function useSafeTransaction({
         safeApiKit.getServiceInfo;
         setTransaction(tx);
       } catch (e) {
-        console.error("Unable to load transaction", e);
         if (errorHasReason(e) && e.reason) {
           toast.error(e.reason);
         } else if (errorHasMessage(e) && e.message) {

@@ -24,7 +24,7 @@ export function SafeSelect({
 
   return (
     <div className="flex items-center">
-      Select the Safe you want to use:
+      Safe account:
       <div className="relative w-44">
         <Listbox value={selectedSafeAddress} onChange={onChange}>
           <Listbox.Button className="p-1 ml-1 cursor-pointer hover:bg-gray-100">

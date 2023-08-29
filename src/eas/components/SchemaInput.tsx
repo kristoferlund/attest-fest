@@ -11,13 +11,13 @@ export function SchemaInput({ onChange, value }: SchemaInputProps) {
 
   return (
     <div>
-      Enter the UID of the schema you want to use:
+      Schema UID:
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onClick={handleInputClick}
-        className="p-1 ml-1 border-b"
+        className="p-1 ml-1 border-b w-96 text-ellipsis"
       />
     </div>
   );

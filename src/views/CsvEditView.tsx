@@ -1,19 +1,24 @@
+import { useEffect, useState } from "react";
+
+import { AttestDialog } from "../safe/components/AttestDialog";
 import CsvEditor from "../eas/components/CsvEditor";
 import { SchemaField } from "../eas/types/schema-field.type";
 import { SchemaPills } from "../eas/components/SchemaPills";
 import { isSchemaFieldTypeName } from "../eas/utils/is-schema-field-type-name";
 import { useEas } from "../eas/hooks/useEas";
-import { useEffect } from "react";
 import { useStateStore } from "../zustand/hooks/useStateStore";
 
-export function SchemaFormView() {
+export function CsvEditView() {
   const { schemaRecord } = useEas();
+
+  // Local state
+  const [attestDialogOpen, setAttestDialogOpen] = useState(false);
+  const [editorTouched, setEditorTouched] = useState(false);
 
   // Global state
   const csv = useStateStore((state) => state.csv);
   const csvError = useStateStore((state) => state.csvError);
-  const editorCsv = useStateStore((state) => state.editorCsv);
-  const showTransaction = useStateStore((state) => state.showTransaction);
+  // const editorCsv = useStateStore((state) => state.editorCsv);
 
   function addRecipientToSchema() {
     if (!schemaRecord) return;
@@ -30,25 +35,32 @@ export function SchemaFormView() {
 
   useEffect(addRecipientToSchema, [schemaRecord]);
 
+  function handleEditorChange(csv: string) {
+    useStateStore.setState({ csv });
+    setEditorTouched(true);
+  }
+
   if (!schemaRecord) return null;
 
   const buttonDisabled =
-    !csv || csv.length < 10 || typeof csvError !== "undefined";
+    !editorTouched ||
+    !csv ||
+    csv.length < 10 ||
+    typeof csvError !== "undefined" ||
+    attestDialogOpen;
 
   return (
     <>
-      <h2>Attestation Data</h2>
-
-      <p>
-        Drop a csv file or paste data in the form below. In addition to the
-        schema fields, you should also include the recipient field.
+      <p className="text-center">
+        Paste data or drop a csv file in the form below. In addition to the
+        schema fields, you also need to include the recipient field.
       </p>
 
       <SchemaPills />
 
       <CsvEditor
-        csv={editorCsv}
-        onChange={(csv) => useStateStore.setState({ csv })}
+        // csv={editorCsv}
+        onChange={handleEditorChange}
         onCsvError={(csvError) => useStateStore.setState({ csvError })}
       />
 
@@ -56,15 +68,17 @@ export function SchemaFormView() {
 
       <button
         className="btn"
-        onClick={() =>
-          useStateStore.setState({
-            showTransaction: !showTransaction,
-          })
-        }
+        onClick={() => setAttestDialogOpen(true)}
         disabled={buttonDisabled}
       >
         Submit
       </button>
+      {attestDialogOpen && (
+        <AttestDialog
+          open={attestDialogOpen}
+          close={() => setAttestDialogOpen(false)}
+        />
+      )}
     </>
   );
 }
