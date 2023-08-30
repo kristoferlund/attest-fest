@@ -2,7 +2,7 @@ import * as Monaco from "monaco-editor";
 
 import { useEffect, useState } from "react";
 
-import CsvEditor from "../src/eas/components/CsvEditor";
+import CsvEditor from "../src/components/CsvEditor";
 import MonacoEditor from "react-monaco-editor";
 import { SchemaField } from "../src/eas/types/schema-field.type";
 import { ValidationError } from "../src/eas/types/validation-error.type";

@@ -4,7 +4,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSafeTransaction } from "../hooks/useSafeTransaction";
+import { useSafeTransaction } from "../safe/hooks/useSafeTransaction";
 
 type AttestDialogExecuteProps = {
   safeTxHash?: string;

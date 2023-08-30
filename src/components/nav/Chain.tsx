@@ -7,11 +7,11 @@ import { useNetwork, useSwitchNetwork } from "wagmi";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox } from "@headlessui/react";
-import { isChainIdSupported } from "../wagmi/isChainIdSupported";
-import { supportedChains } from "../wagmi/wagmi.config";
+import { isChainIdSupported } from "../../wagmi/isChainIdSupported";
+import { supportedChains } from "../../wagmi/wagmi.config";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
-import { useStateStore } from "../zustand/hooks/useStateStore";
+import { useStateStore } from "../../zustand/hooks/useStateStore";
 
 export function Chain() {
   const { chain } = useNetwork();

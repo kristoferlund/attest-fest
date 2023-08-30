@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { useEas } from "../hooks/useEas";
+import { useEas } from "../eas/hooks/useEas";
 
 export function SchemaInformation() {
   const { schemaRecordIsLoading, schemaRecordError, schemaError } = useEas();

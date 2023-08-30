@@ -6,17 +6,17 @@ import {
 import { useEffect, useState } from "react";
 
 import { AttestDialogExecute } from "./AttestDialogExecute";
-import { Button } from "../../components/Button";
-import { CopyButton } from "../../components/CopyButton";
+import { Button } from "./ui/Button";
+import { CopyButton } from "./bg/images/CopyButton";
 import { Dialog } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { parse } from "csv-parse/sync";
-import { shortenEthAddress } from "../../util/string";
-import { useEas } from "../../eas/hooks/useEas";
+import { shortenEthAddress } from "../util/string";
+import { useEas } from "../eas/hooks/useEas";
 import { useNetwork } from "wagmi";
-import { useSafe } from "../hooks/useSafe";
-import { useSafeConfig } from "../hooks/useSafeConfig";
-import { useStateStore } from "../../zustand/hooks/useStateStore";
+import { useSafe } from "../safe/hooks/useSafe";
+import { useSafeConfig } from "../safe/hooks/useSafeConfig";
+import { useStateStore } from "../zustand/hooks/useStateStore";
 
 type AccountDialogProps = {
   open: boolean;
@@ -83,10 +83,10 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
       <div className="fixed inset-0 flex items-center justify-center">
         {/* The actual dialog panel  */}
         <Dialog.Panel className="flex flex-col gap-10 p-5 mx-auto border bg-theme1 w-96 rounded-xl">
-          <Dialog.Title className="flex justify-between text-2xl font-medium">
+          <Dialog.Title className="flex justify-between">
             Attest
             <button onClick={close}>
-              <FontAwesomeIcon icon={faXmark} className="w-6 h-6" />
+              <FontAwesomeIcon icon={faXmark} className="w-4 h-4" />
             </button>
           </Dialog.Title>
 

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-import { AttestDialog } from "../safe/components/AttestDialog";
-import { Button } from "../components/Button";
-import CsvEditor from "../eas/components/CsvEditor";
+import { AttestDialog } from "../components/AttestDialog";
+import { Button } from "../components/ui/Button";
+import CsvEditor from "../components/CsvEditor";
 import { SchemaField } from "../eas/types/schema-field.type";
-import { SchemaPills } from "../eas/components/SchemaPills";
+import { SchemaPills } from "../components/SchemaPills";
 import { isSchemaFieldTypeName } from "../eas/utils/isSchemaFieldTypeName";
 import { useEas } from "../eas/hooks/useEas";
 import { useStateStore } from "../zustand/hooks/useStateStore";

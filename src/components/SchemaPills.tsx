@@ -1,5 +1,5 @@
 import { SchemaPill } from "./SchemaPill";
-import { useStateStore } from "../../zustand/hooks/useStateStore";
+import { useStateStore } from "../zustand/hooks/useStateStore";
 
 export function SchemaPills() {
   const schema = useStateStore((state) => state.schema);

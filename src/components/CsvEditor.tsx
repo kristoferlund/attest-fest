@@ -11,13 +11,13 @@ import { faCircleNotch, faFileImport } from "@fortawesome/free-solid-svg-icons";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { CsvEditorLeaf } from "./CsvEditorLeaf";
-import { CsvText } from "../types/editor-nodes.type";
+import { CsvText } from "../eas/types/editor-nodes.type";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SchemaField } from "../types/schema-field.type";
-import { create } from "zustand";
+import { SchemaField } from "../eas/types/schema-field.type";
 import debounce from "lodash/debounce";
-import { parseCsvAndValidate } from "../utils/parseCsvAndValidate";
-import { useStateStore } from "../../zustand/hooks/useStateStore";
+import { parseCsvAndValidate } from "../eas/utils/parseCsvAndValidate";
+import { useCsvErrorStateStore } from "../zustand/hooks/useCsvErrorStateStore";
+import { useStateStore } from "../zustand/hooks/useStateStore";
 
 // Make Slate play nicely with TS
 declare module "slate" {
@@ -72,12 +72,6 @@ const IGNORED_KEYS = [
   "ArrowRight",
 ];
 
-// Local "global" state allowing editor leafs to set errors
-type UseCsvErrorStateProps = {
-  editorErrorMessage?: string;
-};
-export const useCsvErrorState = create<UseCsvErrorStateProps>(() => ({}));
-
 type CsvEditorProps = {
   onChange: (csvData: string) => void;
   onCsvError: (error?: Error) => void;
@@ -92,7 +86,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
   // Global state
   const schema = useStateStore((state) => state.schema);
 
-  const editorErrorMessage = useCsvErrorState(
+  const editorErrorMessage = useCsvErrorStateStore(
     (state) => state.editorErrorMessage
   );
 

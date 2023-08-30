@@ -2,8 +2,8 @@ import { faCheck, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox } from "@headlessui/react";
-import { shortenEthAddress } from "../../util/string";
-import { useSafe } from "../hooks/useSafe";
+import { shortenEthAddress } from "../util/string";
+import { useSafe } from "../safe/hooks/useSafe";
 
 type WalletSelectProps = {
   onChange: (address: string) => void;

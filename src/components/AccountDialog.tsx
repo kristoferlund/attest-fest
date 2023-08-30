@@ -25,10 +25,10 @@ export function AccountDialog({ open, close }: AccountDialogProps) {
       <div className="fixed inset-0 flex items-center justify-center">
         {/* The actual dialog panel  */}
         <Dialog.Panel className="flex flex-col gap-3 p-5 mx-auto border bg-theme1 w-96 rounded-xl">
-          <Dialog.Title className="flex justify-between text-xl font-medium">
+          <Dialog.Title className="flex justify-between">
             Account
             <button onClick={close}>
-              <FontAwesomeIcon icon={faXmark} className="w-6 h-6" />
+              <FontAwesomeIcon icon={faXmark} className="w-4 h-4" />
             </button>
           </Dialog.Title>
 

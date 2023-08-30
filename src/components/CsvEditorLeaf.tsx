@@ -1,6 +1,6 @@
-import { CsvText } from "../types/editor-nodes.type";
+import { CsvText } from "../eas/types/editor-nodes.type";
 import { ReactNode } from "react";
-import { useCsvErrorState } from "./CsvEditor";
+import { useCsvErrorStateStore } from "../zustand/hooks/useCsvErrorStateStore";
 
 type CsvEditorLeafProps = {
   children: ReactNode;
@@ -18,11 +18,11 @@ export const CsvEditorLeaf = ({
   const handleMouseEnter = () => {
     if (leaf.type !== "value") return;
     if (!leaf.error?.error) return;
-    useCsvErrorState.setState({ editorErrorMessage: leaf.error.error });
+    useCsvErrorStateStore.setState({ editorErrorMessage: leaf.error.error });
   };
 
   const handleMouseLeave = () => {
-    useCsvErrorState.setState({ editorErrorMessage: undefined });
+    useCsvErrorStateStore.setState({ editorErrorMessage: undefined });
   };
 
   if (leaf.type === "value") {

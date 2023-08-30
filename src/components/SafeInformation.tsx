@@ -1,4 +1,4 @@
-import { useSafe } from "../hooks/useSafe";
+import { useSafe } from "../safe/hooks/useSafe";
 
 export function SafeInformation() {
   const { owners, threshold, safeAddress } = useSafe();
