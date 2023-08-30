@@ -134,14 +134,15 @@ function App() {
   );
 
   return (
-    <div>
-      <div className="absolute top-0 left-0 w-screen h-screen -z-10">
+    <>
+      <div className="fixed top-0 left-0 w-full h-full -z-10">
         <BackgroundImages images={images} minSize={minSize} maxSize={maxSize} />
       </div>
       <Navbar />
-      <div className="pt-36 md:pt-24 w-full md:w-[768px]">
-        <div className="flex flex-col items-center justify-center gap-5 p-5">
-          <div className="">Attest Fest</div>
+      <div className="flex justify-center pt-36 md:pt-24 ">
+        <div className="flex flex-col items-center justify-center gap-5 p-5 w-full md:w-[768px]">
+          <div className="text-theme1 bg-theme4">Attest Fest</div>
+          <div className="text-white bg-red-500">Beta</div>
           <div className="text-center">Create many attestations at a time.</div>
           {chain?.id && (
             <SafeContextProvider address={selectedSafeAddress}>
@@ -150,8 +151,7 @@ function App() {
           )}
         </div>
       </div>
-      <Toaster />
-    </div>
+    </>
   );
 }
 
