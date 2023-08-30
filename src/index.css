@@ -12,16 +12,16 @@ body {
   @apply text-xs font-press-start text-theme4 focus:outline-none focus-visible:outline-none;
 }
 
+a {
+  @apply underline;
+}
+
 ::selection {
   @apply bg-theme4 text-theme1;
 }
 
 *:focus {
   @apply outline-none;
-}
-
-#root > div:first-child {
-  @apply !inset-0 w-screen md:w-auto;
 }
 
 .border {

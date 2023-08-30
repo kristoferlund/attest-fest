@@ -144,7 +144,7 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
                     {submitButtonWaiting && (
                       <FontAwesomeIcon
                         icon={faCircleNotch}
-                        className="w-4 mr-2"
+                        className="w-4 h-4 mr-2"
                         spin
                         size="2x"
                       />

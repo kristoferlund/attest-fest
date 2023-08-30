@@ -46,7 +46,7 @@ export function Chain() {
   return (
     <div className="relative">
       <Listbox value={chain.id} onChange={(c) => switchNetwork?.(c)}>
-        <Listbox.Button className="w-full px-5 py-3 border cursor-pointer bg-theme1 rounded-xl hover:bg-theme2 sm:inline-block">
+        <Listbox.Button className="w-full px-5 py-3 border cursor-pointer bg-theme1 rounded-xl hover:bg-theme2 md:inline-block">
           {isChainIdSupported(chain.id) ? (
             <ChainIcon chainName={chain.name} className="h-4" />
           ) : (

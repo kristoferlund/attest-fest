@@ -11,10 +11,14 @@ export function SchemaInformation() {
         <FontAwesomeIcon icon={faCircleNotch} spin size="2x" />
       )}
 
-      {schemaRecordError && <div>{schemaRecordError.message}</div>}
+      {schemaRecordError && (
+        <div className="p-5 text-center text-white bg-red-500">
+          {schemaRecordError.message}
+        </div>
+      )}
 
       {schemaError && (
-        <div>
+        <div className="p-5 text-center text-white bg-red-500">
           Attestation schemas using arrays are not yet supported.{" "}
           {schemaError.message}
         </div>

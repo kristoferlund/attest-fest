@@ -17,6 +17,7 @@ import { SchemaField } from "../eas/types/schema-field.type";
 import debounce from "lodash/debounce";
 import { parseCsvAndValidate } from "../eas/utils/parseCsvAndValidate";
 import { useCsvErrorStateStore } from "../zustand/hooks/useCsvErrorStateStore";
+import { useEas } from "../eas/hooks/useEas";
 import { useStateStore } from "../zustand/hooks/useStateStore";
 
 // Make Slate play nicely with TS
@@ -85,7 +86,6 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
 
   // Global state
   const schema = useStateStore((state) => state.schema);
-
   const editorErrorMessage = useCsvErrorStateStore(
     (state) => state.editorErrorMessage
   );

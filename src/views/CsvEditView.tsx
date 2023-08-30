@@ -10,7 +10,7 @@ import { useEas } from "../eas/hooks/useEas";
 import { useStateStore } from "../zustand/hooks/useStateStore";
 
 export function CsvEditView() {
-  const { schemaRecord } = useEas();
+  const { schemaRecord, schemaRecordError, schemaError } = useEas();
 
   // Local state
   const [attestDialogOpen, setAttestDialogOpen] = useState(false);
@@ -40,7 +40,7 @@ export function CsvEditView() {
     setEditorTouched(true);
   }
 
-  if (!schemaRecord) return null;
+  if (!schemaRecord || schemaError || schemaRecordError) return null;
 
   const buttonDisabled =
     !editorTouched ||

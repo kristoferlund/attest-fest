@@ -3,6 +3,7 @@ import {
   faCircleNotch,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { Button } from "./ui/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSafeTransaction } from "../safe/hooks/useSafeTransaction";
 
@@ -55,16 +56,16 @@ export function AttestDialogExecute({
             executed.
           </div>
           <div className="flex justify-center gap-5">
-            <button onClick={onClose}>Close</button>
+            <Button onClick={onClose}>Close</Button>
 
-            <button
+            <Button
               onClick={() => executeTransaction && executeTransaction()}
               disabled={executeButtonDisabled}
             >
               {executeButtonWaiting && (
                 <FontAwesomeIcon
                   icon={faCircleNotch}
-                  className="w-4 mr-2"
+                  className="w-4 h-4 mr-2"
                   spin
                   size="2x"
                 />
@@ -73,7 +74,7 @@ export function AttestDialogExecute({
                 <FontAwesomeIcon icon={faCheckCircle} className="w-4 mr-2" />
               )}
               {executeButtonText()}
-            </button>
+            </Button>
           </div>
         </>
       )}

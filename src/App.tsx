@@ -1,8 +1,11 @@
 import { Background } from "./components/bg/Background";
+import { CsvEditView } from "./views/CsvEditView";
+import { EasContextProvider } from "./eas/components/EasContextProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Navbar } from "./components/nav/Navbar";
 import { SafeContextProvider } from "./safe/components/SafeContextProvider";
 import { SafeSelect } from "./components/SafeSelect";
+import { SchemaInformation } from "./components/SchemaInformation";
 import { SchemaInput } from "./components/SchemaInput";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { useNetwork } from "wagmi";
@@ -25,7 +28,7 @@ function AppInner() {
         <>
           {safes.length > 0 ? (
             <>
-              <table className="min-w-full table-auto ">
+              <table className="min-w-full table-auto text-[8px] md:text-xs">
                 <tbody>
                   <tr>
                     <td>
@@ -74,37 +77,14 @@ function AppInner() {
                 </tbody>
               </table>
 
-              {/* <div className="border-2 border-theme4 rounded-xl">
-                <div className="grid grid-cols-2 divide-x-2 divide-y-2 divide-theme4 border-theme4">
-                  <div className="flex items-center justify-end w-full p-2">
-                    Safe account
-                  </div>
-                  <SafeSelect
-                    selectedSafeAddress={selectedSafeAddress}
-                    onChange={(address) =>
-                      useStateStore.setState({ selectedSafeAddress: address })
-                    }
-                  />
-                  <div className="flex items-center justify-end w-full p-2">
-                    Required signatures
-                  </div>
-                  <div className="flex items-center justify-end w-full p-2">
-                    <strong>{threshold}</strong> out of{" "}
-                    <strong>{owners.length} owners</strong>.
-                  </div>
-                  <div className="flex items-center justify-end w-full p-2">
-                    Schema UID
-                  </div>
-                  <div className="flex items-center justify-end w-full p-2">
-                    <SchemaInput
-                      value={schemaUid}
-                      onChange={(schemaUid) =>
-                        useStateStore.setState({ schemaUid })
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
+              {schemaUid && (
+                <EasContextProvider schemaUid={schemaUid}>
+                  <SchemaInformation />
+                  <CsvEditView />
+                </EasContextProvider>
+              )}
+
+              {/* 
               {selectedSafeAddress && owners?.length > 0 && (
                 <>
                   <SafeInformation />
@@ -125,13 +105,13 @@ function AppInner() {
               )} */}
             </>
           ) : (
-            <p className="text-center">
-              The connected wallet is not owner of any safes. Connect with
-              another wallet or create a safe at{" "}
+            <div className="p-5 text-center text-white bg-red-500">
+              The connected address is not the owner of any Safe account.
+              Connect with another wallet or create a safe at{" "}
               <a href="https://safe.global/" target="_blank">
                 safe.global
               </a>
-            </p>
+            </div>
           )}
         </>
       ) : (
@@ -154,9 +134,8 @@ function App() {
       <Background />
       <Navbar />
       <div className="flex justify-center pt-36 md:pt-24 ">
-        <div className="flex flex-col items-center justify-center gap-5 p-5 w-full md:w-[768px]">
+        <div className="flex flex-col items-center justify-center gap-10 p-5 w-full md:w-[768px]">
           <div className="p-2 text-theme1 bg-theme4">Attest Fest</div>
-          <div className="p-1 text-white bg-red-500">Beta</div>
           <div className="text-center">Create many attestations at a time.</div>
           {chain?.id && (
             <SafeContextProvider address={selectedSafeAddress}>
