@@ -9,6 +9,7 @@ type GlobalState = {
   csv: string;
   csvError?: Error;
   showTransaction?: boolean;
+  editorErrorMessage?: string;
 };
 
 export const useStateStore = create(

@@ -14,6 +14,7 @@ import { CsvEditorLeaf } from "./CsvEditorLeaf";
 import { CsvText } from "../types/editor-nodes.type";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SchemaField } from "../types/schema-field.type";
+import { create } from "zustand";
 import debounce from "lodash/debounce";
 import { parseCsvAndValidate } from "../utils/parseCsvAndValidate";
 import { useStateStore } from "../../zustand/hooks/useStateStore";
@@ -64,6 +65,11 @@ const IGNORED_KEYS = [
   "ArrowRight",
 ];
 
+type UseCsvErrorStateProps = {
+  editorErrorMessage?: string;
+};
+export const useCsvErrorState = create<UseCsvErrorStateProps>(() => ({}));
+
 type CsvEditorProps = {
   // csv: string;
   onChange: (csvData: string) => void;
@@ -78,6 +84,10 @@ const CsvEditor = ({ onChange, onCsvError }: CsvEditorProps) => {
 
   // Global state
   const schema = useStateStore((state) => state.schema);
+
+  const editorErrorMessage = useCsvErrorState(
+    (state) => state.editorErrorMessage
+  );
 
   // Slate editor instance
   const editor = useMemo(() => withReact(createEditor()), []);
@@ -195,8 +205,13 @@ const CsvEditor = ({ onChange, onCsvError }: CsvEditorProps) => {
       onDragOver={handleDragOver}
       onDragEnter={handleDragEnter}
       onDrop={handleFileDrop}
-      className="relative flex flex-col items-center justify-center w-full gap-5"
+      className="relative"
     >
+      {editorErrorMessage && (
+        <div className="absolute z-10 p-5 transform -translate-x-1/2 -translate-y-1/2 bg-opacity-70 text-theme1 bg-theme4 left-1/2 top-1/2">
+          {editorErrorMessage}
+        </div>
+      )}
       <Slate
         editor={editor}
         initialValue={editorInitialValue}

@@ -1,5 +1,6 @@
 import { CsvText } from "../types/editor-nodes.type";
 import { ReactNode } from "react";
+import { useCsvErrorState } from "./CsvEditor";
 
 type CsvEditorLeafProps = {
   children: ReactNode;
@@ -14,11 +15,26 @@ export const CsvEditorLeaf = ({
   children,
   leaf,
 }: CsvEditorLeafProps) => {
+  const handleMouseEnter = () => {
+    if (leaf.type !== "value") return;
+    if (!leaf.error?.error) return;
+    useCsvErrorState.setState({ editorErrorMessage: leaf.error.error });
+  };
+
+  const handleMouseLeave = () => {
+    useCsvErrorState.setState({ editorErrorMessage: undefined });
+  };
+
   if (leaf.type === "value") {
     const errorClass = leaf.error?.error ? "bg-red-500 text-white" : "";
-    const errorTitle = leaf.error?.error || "";
+
     return (
-      <span {...attributes} className={errorClass} title={errorTitle}>
+      <span
+        {...attributes}
+        className={errorClass}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {children}
       </span>
     );
