@@ -3,7 +3,7 @@ import { useAccount, useDisconnect, useEnsName } from "wagmi";
 
 import { Dialog } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { shortenEthAddress } from "../util/string";
+import { shortenEthAddress } from "../eth/util/shortenEthAddress";
 
 type AccountDialogProps = {
   open: boolean;

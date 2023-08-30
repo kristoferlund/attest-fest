@@ -2,7 +2,7 @@ import { faCheck, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox } from "@headlessui/react";
-import { shortenEthAddress } from "../util/string";
+import { shortenEthAddress } from "../eth/util/shortenEthAddress";
 import { useSafe } from "../safe/hooks/useSafe";
 
 type WalletSelectProps = {

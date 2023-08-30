@@ -2,7 +2,7 @@ import { useAccount, useConnect, useEnsName } from "wagmi";
 
 import { AccountDialog } from "../AccountDialog";
 import { Button } from "../ui/Button";
-import { shortenEthAddress } from "../../util/string";
+import { shortenEthAddress } from "../../eth/util/shortenEthAddress";
 import { useState } from "react";
 
 export function Address() {

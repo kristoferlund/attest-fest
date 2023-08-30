@@ -11,7 +11,7 @@ import { CopyButton } from "./bg/images/CopyButton";
 import { Dialog } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { parse } from "csv-parse/sync";
-import { shortenEthAddress } from "../util/string";
+import { shortenEthAddress } from "../eth/util/shortenEthAddress";
 import { useEas } from "../eas/hooks/useEas";
 import { useNetwork } from "wagmi";
 import { useSafe } from "../safe/hooks/useSafe";
