@@ -5,6 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 
+import { ChainIcon } from "./ChainIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox } from "@headlessui/react";
 import { isChainIdSupported } from "../../wagmi/isChainIdSupported";
@@ -45,9 +46,9 @@ export function Chain() {
   return (
     <div className="relative">
       <Listbox value={chain.id} onChange={(c) => switchNetwork?.(c)}>
-        <Listbox.Button className="w-full px-5 py-3 border cursor-pointer rounded-xl hover:bg-theme2 sm:inline-block">
+        <Listbox.Button className="w-full px-5 py-3 border cursor-pointer bg-theme1 rounded-xl hover:bg-theme2 sm:inline-block">
           {isChainIdSupported(chain.id) ? (
-            chain.name
+            <ChainIcon chainName={chain.name} className="h-4" />
           ) : (
             <div>
               <FontAwesomeIcon icon={faWaveSquare} className="mr-1" />
@@ -60,7 +61,7 @@ export function Chain() {
             <Listbox.Option
               key={chain.id}
               value={chain.id}
-              className="flex items-center justify-between px-3 py-1 rounded-md w-44 ui-active:bg-theme3 ui-active:text-theme1 whitespace-nowrap"
+              className="flex items-center justify-between px-3 py-1 rounded-md cursor-pointer w-44 ui-active:bg-theme3 ui-active:text-theme1 whitespace-nowrap"
             >
               {chain.name}
               <FontAwesomeIcon

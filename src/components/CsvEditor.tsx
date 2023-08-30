@@ -244,7 +244,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
           renderLeaf={CsvEditorLeaf}
           onKeyDown={handleKeyPress}
           onPaste={() => setContentChanged(true)}
-          className="border-2 border-theme4 bg-theme1 w-full md:w-[700px] h-[300px] p-5 overflow-auto focus:border-b-2 focus:outline-none caret-theme4 focus:bg-theme2"
+          className="border-2 border-theme4 rounded-xl bg-theme1 w-full md:w-[700px] h-[300px] p-5 overflow-auto focus:border-b-2 focus:outline-none caret-theme4 focus:bg-theme2"
           spellCheck={false}
         />
       </Slate>

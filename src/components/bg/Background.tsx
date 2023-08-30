@@ -26,7 +26,12 @@ const maxSize = 10; // Maximum size in percentage
 export function Background() {
   return (
     <div className="fixed top-0 left-0 w-full h-full -z-10">
-      <BackgroundImages images={images} minSize={minSize} maxSize={maxSize} />
+      <BackgroundImages
+        images={images}
+        minSize={minSize}
+        maxSize={maxSize}
+        maxRepetitions={10}
+      />
     </div>
   );
 }

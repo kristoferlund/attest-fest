@@ -4,10 +4,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        theme1: "#FAF1E4",
-        theme2: "#CEDEBD",
-        theme3: "#9EB384",
-        theme4: "#435334",
+        theme1: "#040D12",
+        theme2: "#183D3D",
+        theme3: "#5C8374",
+        theme4: "#93B1A6",
       },
       fontFamily: {
         "press-start": ['"Press Start 2P"', "cursive"],

@@ -22,7 +22,7 @@ export function Address() {
   return (
     <>
       <div
-        className="px-5 py-3 border cursor-pointer rounded-xl hover:bg-theme2"
+        className="px-5 py-3 border cursor-pointer bg-theme1 rounded-xl hover:bg-theme2"
         onClick={() => setIsOpen(true)}
       >
         {ensName ?? shortenEthAddress(address)}
