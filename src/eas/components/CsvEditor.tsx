@@ -19,6 +19,7 @@ import debounce from "lodash/debounce";
 import { parseCsvAndValidate } from "../utils/parseCsvAndValidate";
 import { useStateStore } from "../../zustand/hooks/useStateStore";
 
+// Make Slate play nicely with TS
 declare module "slate" {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor;
@@ -26,6 +27,9 @@ declare module "slate" {
   }
 }
 
+/**
+ * Serialize the Slate editor content to CSV, handling quotes and escaping.
+ */
 function serializeToCsv(nodes: Node[]): string {
   let content = "";
   for (let i = 0; i < nodes.length; i++) {
@@ -51,6 +55,9 @@ function serializeToCsv(nodes: Node[]): string {
   return content;
 }
 
+/**
+ * Keys that should not trigger content validation.
+ */
 const IGNORED_KEYS = [
   "Shift",
   "Control",
@@ -65,18 +72,18 @@ const IGNORED_KEYS = [
   "ArrowRight",
 ];
 
+// Local "global" state allowing editor leafs to set errors
 type UseCsvErrorStateProps = {
   editorErrorMessage?: string;
 };
 export const useCsvErrorState = create<UseCsvErrorStateProps>(() => ({}));
 
 type CsvEditorProps = {
-  // csv: string;
   onChange: (csvData: string) => void;
   onCsvError: (error?: Error) => void;
 };
 
-const CsvEditor = ({ onChange, onCsvError }: CsvEditorProps) => {
+export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
   // Local state
   const [isParsing, setIsParsing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -249,6 +256,4 @@ const CsvEditor = ({ onChange, onCsvError }: CsvEditorProps) => {
       </Slate>
     </div>
   );
-};
-
-export default CsvEditor;
+}
