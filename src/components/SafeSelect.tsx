@@ -25,11 +25,13 @@ export function SafeSelect({
   return (
     <div className="relative">
       <Listbox value={selectedSafeAddress} onChange={onChange}>
-        <Listbox.Button className="p-2 bg-opacity-50 cursor-pointer bg-theme2 hover:bg-opacity-100">
-          {selectedAddressInSafes
-            ? shortenEthAddress(selectedSafeAddress)
-            : "Select Wallet"}
-          <FontAwesomeIcon icon={faChevronDown} className="pl-2" />
+        <Listbox.Button className="w-full p-2 text-left bg-opacity-50 cursor-pointer bg-theme2 hover:bg-opacity-100">
+          <div className="flex w-full">
+            <div className="overflow-clip overflow-ellipsis w-96">
+              {selectedAddressInSafes ? selectedSafeAddress : "Select Wallet"}
+            </div>
+            <FontAwesomeIcon icon={faChevronDown} className="pl-2" />
+          </div>
         </Listbox.Button>
         <Listbox.Options className="absolute left-0 p-2 border bg-theme2 top-8 rounded-xl">
           {safes.map((safe) => (
