@@ -17,7 +17,6 @@ import { SchemaField } from "../eas/types/schema-field.type";
 import debounce from "lodash/debounce";
 import { parseCsvAndValidate } from "../eas/utils/parseCsvAndValidate";
 import { useCsvErrorStateStore } from "../zustand/hooks/useCsvErrorStateStore";
-import { useEas } from "../eas/hooks/useEas";
 import { useStateStore } from "../zustand/hooks/useStateStore";
 
 // Make Slate play nicely with TS
@@ -206,7 +205,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
       onDragOver={handleDragOver}
       onDragEnter={handleDragEnter}
       onDrop={handleFileDrop}
-      className="relative"
+      className="relative w-full"
     >
       {editorErrorMessage && (
         <div className="absolute z-10 p-5 transform -translate-x-1/2 -translate-y-1/2 bg-opacity-70 text-theme1 bg-theme4 left-1/2 top-1/2">
@@ -244,7 +243,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
           renderLeaf={CsvEditorLeaf}
           onKeyDown={handleKeyPress}
           onPaste={() => setContentChanged(true)}
-          className="border-2 border-theme4 rounded-xl bg-theme1 w-full md:w-[700px] h-[300px] p-5 overflow-auto focus:border-b-2 focus:outline-none caret-theme4 focus:bg-theme2"
+          className="border-2 border-theme4 rounded-xl bg-theme1 w-full h-[300px] p-5 overflow-auto focus:border-b-2 focus:outline-none caret-theme4 focus:bg-theme2"
           spellCheck={false}
         />
       </Slate>

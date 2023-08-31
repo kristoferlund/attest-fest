@@ -14,7 +14,7 @@ import { useStateStore } from "./zustand/hooks/useStateStore";
 
 function AppInner() {
   //Hooks
-  const { safes, owners, threshold } = useSafe();
+  const { safes, owners, threshold, safe } = useSafe();
 
   // Global state
   const selectedSafeAddress = useStateStore(
@@ -83,26 +83,6 @@ function AppInner() {
                   <CsvEditView />
                 </EasContextProvider>
               )}
-
-              {/* 
-              {selectedSafeAddress && owners?.length > 0 && (
-                <>
-                  <SafeInformation />
-                  <SchemaInput
-                    value={schemaUid}
-                    onChange={(schemaUid) =>
-                      useStateStore.setState({ schemaUid })
-                    }
-                  />
-                </>
-              )}
-
-              {schemaUid && (
-                <EasContextProvider schemaUid={schemaUid}>
-                  <SchemaInformation />
-                  <CsvEditView />
-                </EasContextProvider>
-              )} */}
             </>
           ) : (
             <div className="p-5 text-center text-white bg-red-500">
@@ -135,7 +115,7 @@ function App() {
       <Navbar />
       <div className="flex justify-center pt-36 md:pt-24 ">
         <div className="flex flex-col items-center justify-center gap-10 p-5 w-full md:w-[768px]">
-          <div className="p-2 text-theme1 bg-theme4">Attest Fest</div>
+          <div className="p-2 text-theme1 bg-theme-accent">Attest Fest</div>
           <div className="text-center">Create many attestations at a time.</div>
           {chain?.id && (
             <SafeContextProvider address={selectedSafeAddress}>

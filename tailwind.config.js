@@ -8,6 +8,7 @@ export default {
         theme2: "#183D3D",
         theme3: "#5C8374",
         theme4: "#93B1A6",
+        "theme-accent": "#6A6286",
       },
       fontFamily: {
         "press-start": ['"Press Start 2P"', "cursive"],
