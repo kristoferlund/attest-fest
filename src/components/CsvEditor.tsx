@@ -106,9 +106,6 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         if (!("children" in row)) continue;
-        console.log(
-          row.children.filter((r) => (r as CsvText).text !== ",").length
-        );
         if (
           Array.isArray(row.children) &&
           row.children.filter((r) => (r as CsvText).text !== ",").length <

@@ -8,6 +8,8 @@ import { SafeMultisigTransactionResponse } from "@safe-global/safe-core-sdk-type
 import { SignSafeTransactionStateType } from "../types/sign-safe-transaction-state.type";
 import { errorHasMessage } from "../../eth/util/errorHasMessage";
 import { errorHasReason } from "../../eth/util/errorHasReason";
+import { errorMessage } from "../errorCodes";
+import { isExecuteError } from "../util/isExecuteError";
 import { toast } from "react-hot-toast";
 import { useSafe } from "./useSafe";
 import { useSafeConfig } from "./useSafeConfig";
@@ -136,6 +138,44 @@ export function useSafeTransaction({
         setTimeout(awaitTransactionIndexing, 10000); // Check every 10 seconds if the transaction has been indexed
       } catch (e) {
         console.error("Unable to execute transaction", e);
+
+        if (isExecuteError(e)) {
+          const tenderlySimulationRequest = {
+            to: e.transaction.to,
+            input: e.transaction.data,
+            network_id: "10",
+            from: e.transaction.from,
+            gas: 30000000,
+            gas_price: "0",
+            save: true,
+            save_if_fails: true,
+          };
+
+          // Fetch additional transaction errors from running a Tenderly simulation
+          const tenderlyResponse = await fetch(
+            "https://simulation.safe.global/",
+            {
+              method: "POST",
+              body: JSON.stringify(tenderlySimulationRequest),
+            }
+          );
+
+          const json = await tenderlyResponse.json();
+          if ("simulation" in json) {
+            if (json.simulation.error_message) {
+              let msg = json.simulation.error_message;
+              if (msg.startsWith("GS")) {
+                msg = errorMessage(msg);
+                if (msg) {
+                  toast.error(msg);
+                }
+              } else {
+                toast.error(msg);
+              }
+            }
+          }
+        }
+
         if (errorHasReason(e) && e.reason) {
           toast.error(e.reason);
         } else if (errorHasMessage(e) && e.message) {
