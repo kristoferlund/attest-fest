@@ -16,8 +16,5 @@ export default {
       },
     },
   },
-  plugins: [
-    require("@headlessui/tailwindcss"),
-    require("@tailwindcss/typography"),
-  ],
+  plugins: [require("@headlessui/tailwindcss")],
 };

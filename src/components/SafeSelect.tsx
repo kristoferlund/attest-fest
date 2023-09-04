@@ -28,12 +28,12 @@ export function SafeSelect({
         <Listbox.Button className="w-full p-2 text-left bg-opacity-50 cursor-pointer bg-theme2 hover:bg-opacity-100">
           <div className="flex w-full">
             <div className="overflow-clip overflow-ellipsis w-96">
-              {selectedAddressInSafes ? selectedSafeAddress : "Select Wallet"}
+              {selectedAddressInSafes ? selectedSafeAddress : "-"}
             </div>
             <FontAwesomeIcon icon={faChevronDown} className="pl-2" />
           </div>
         </Listbox.Button>
-        <Listbox.Options className="absolute left-0 p-2 border bg-theme2 top-8 rounded-xl">
+        <Listbox.Options className="absolute left-0 p-2 border bg-theme2 top-10 rounded-xl">
           {safes.map((safe) => (
             <Listbox.Option
               key={safe}

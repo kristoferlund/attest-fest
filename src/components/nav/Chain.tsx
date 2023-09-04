@@ -43,10 +43,14 @@ export function Chain() {
     );
   }
 
+  const bg = isChainIdSupported(chain.id) ? "bg-theme1" : "bg-red-500/50";
+
   return (
     <div className="relative">
       <Listbox value={chain.id} onChange={(c) => switchNetwork?.(c)}>
-        <Listbox.Button className="w-full px-5 py-3 border cursor-pointer bg-theme1 rounded-xl hover:bg-theme2 md:inline-block">
+        <Listbox.Button
+          className={`w-full px-5 py-3 border cursor-pointer rounded-xl hover:bg-theme2 md:inline-block ${bg}`}
+        >
           {isChainIdSupported(chain.id) ? (
             <ChainIcon chainName={chain.name} className="h-4" />
           ) : (
