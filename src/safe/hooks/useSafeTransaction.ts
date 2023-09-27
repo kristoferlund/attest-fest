@@ -56,6 +56,7 @@ export function useSafeTransaction({
         const tx = await safeApiKit.getTransaction(safeTxHash);
         safeApiKit.getServiceInfo;
         setTransaction(tx);
+        tx.isExecuted && setExecuteState({ state: "executed" });
       } catch (e) {
         if (errorHasReason(e) && e.reason) {
           toast.error(e.reason);

@@ -6,6 +6,10 @@ import {
 import { Button } from "./ui/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSafeTransaction } from "../safe/hooks/useSafeTransaction";
+import { useNetwork } from "wagmi";
+import { useSafeConfig } from "../safe/hooks/useSafeConfig";
+import { useEas } from "../eas/hooks/useEas";
+import { useEasConfig } from "../eas/hooks/useEasConfig";
 
 type AttestDialogExecuteProps = {
   safeTxHash?: string;
@@ -16,10 +20,19 @@ export function AttestDialogExecute({
   safeTxHash,
   onClose,
 }: AttestDialogExecuteProps) {
-  const { moreConfirmationsRequired, executeTransaction, executeState } =
-    useSafeTransaction({
-      safeTxHash,
-    });
+  const { chain } = useNetwork();
+  const safeConfig = useSafeConfig(chain?.id);
+  const { schemaUid } = useEas();
+  const easConfig = useEasConfig(chain?.id);
+
+  const {
+    moreConfirmationsRequired,
+    executeTransaction,
+    executeState,
+    transaction,
+  } = useSafeTransaction({
+    safeTxHash,
+  });
 
   const executeButtonDisabled =
     typeof executeState?.state !== "undefined" &&
@@ -76,6 +89,32 @@ export function AttestDialogExecute({
               {executeButtonText()}
             </Button>
           </div>
+          {executeState?.state === "executed" && (
+            <div className="flex flex-col items-center gap-2">
+              <div className="text-center">
+                Transaction:{" "}
+                <a
+                  href={`${safeConfig?.explorerUrl}/tx/${transaction?.transactionHash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline"
+                >
+                  Etherscan
+                </a>
+              </div>
+              <div className="text-center">
+                Attestations:{" "}
+                <a
+                  href={`${easConfig?.explorerUrl}/schema/view/${schemaUid}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline"
+                >
+                  Easscan
+                </a>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
