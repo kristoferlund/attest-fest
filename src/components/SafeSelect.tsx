@@ -33,7 +33,7 @@ export function SafeSelect({
             <FontAwesomeIcon icon={faChevronDown} className="pl-2" />
           </div>
         </Listbox.Button>
-        <Listbox.Options className="absolute left-0 p-2 border bg-theme2 top-10 rounded-xl">
+        <Listbox.Options className="absolute left-0 z-10 p-2 border bg-theme2 top-10 rounded-xl">
           {safes.map((safe) => (
             <Listbox.Option
               key={safe}
