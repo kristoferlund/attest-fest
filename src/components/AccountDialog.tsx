@@ -24,7 +24,7 @@ export function AccountDialog({ open, close }: AccountDialogProps) {
       {/* Full-screen container to center the panel */}
       <div className="fixed inset-0 flex items-center justify-center">
         {/* The actual dialog panel  */}
-        <Dialog.Panel className="flex flex-col gap-3 p-5 mx-auto border bg-theme1 w-96 rounded-xl">
+        <Dialog.Panel className="flex flex-col gap-3 p-5 mx-auto border bg-theme1 w-96 rounded-xl theme-shadow">
           <Dialog.Title className="flex justify-between">
             Account
             <button onClick={close}>

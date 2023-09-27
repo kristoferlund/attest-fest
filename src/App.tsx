@@ -143,7 +143,7 @@ function App() {
       <Background />
       <Navbar />
       <div className="flex justify-center pt-36 md:pt-36 ">
-        <div className="flex flex-col items-center justify-center gap-10 p-10 w-full md:w-[768px] border rounded-xl bg-theme1 app mb-40">
+        <div className="flex flex-col items-center justify-center gap-10 p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow mb-40">
           {!chain?.id && renderNotConnectedToWallet()}
           {chain?.id &&
             !isConnnectedToSupportedChain &&
