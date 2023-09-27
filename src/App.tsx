@@ -29,7 +29,35 @@ function AppInner() {
         <>
           {safes.length > 0 ? (
             <>
-              <table className="min-w-full table-auto text-[8px] md:text-xs">
+              <div className="flex flex-col items-center gap-10 md:hidden">
+                <div className="underline">Safe account</div>
+                <SafeSelect
+                  selectedSafeAddress={selectedSafeAddress}
+                  onChange={(address) =>
+                    useStateStore.setState({
+                      selectedSafeAddress: address,
+                    })
+                  }
+                />
+                <div>
+                  Required signatures:
+                  {selectedSafeAddress ? (
+                    <>
+                      {threshold} out of {owners.length} owners.
+                    </>
+                  ) : (
+                    <>-</>
+                  )}
+                </div>
+                <div className="underline">Schema UID</div>
+                <SchemaInput
+                  value={schemaUid}
+                  onChange={(schemaUid) =>
+                    useStateStore.setState({ schemaUid })
+                  }
+                />
+              </div>
+              <table className="min-w-full table-auto text-[8px] text-xs hidden md:block">
                 <tbody>
                   <tr>
                     <td>
@@ -142,8 +170,8 @@ function App() {
     <>
       <Background />
       <Navbar />
-      <div className="flex justify-center pt-36 md:pt-36 ">
-        <div className="flex flex-col items-center justify-center gap-10 p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow mb-40">
+      <div className="flex justify-center pt-60 md:pt-36 ">
+        <div className="flex flex-col items-center justify-center gap-10 p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow mb-40 mx-5">
           {!chain?.id && renderNotConnectedToWallet()}
           {chain?.id &&
             !isConnnectedToSupportedChain &&

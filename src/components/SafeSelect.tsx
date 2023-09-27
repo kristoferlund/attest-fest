@@ -27,7 +27,7 @@ export function SafeSelect({
       <Listbox value={selectedSafeAddress} onChange={onChange}>
         <Listbox.Button className="w-full p-2 text-left bg-opacity-50 cursor-pointer bg-theme2 hover:bg-opacity-100">
           <div className="flex w-full">
-            <div className="overflow-clip overflow-ellipsis w-96">
+            <div className="w-56 overflow-clip overflow-ellipsis md:w-96">
               {selectedAddressInSafes ? selectedSafeAddress : "-"}
             </div>
             <FontAwesomeIcon icon={faChevronDown} className="pl-2" />
