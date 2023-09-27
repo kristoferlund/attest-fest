@@ -15,6 +15,7 @@ export function CsvEditView() {
   // Local state
   const [attestDialogOpen, setAttestDialogOpen] = useState(false);
   const [editorTouched, setEditorTouched] = useState(false);
+  const [submitDisabled, setSubmitDisabled] = useState(false);
 
   // Global state
   const csv = useStateStore((state) => state.csv);
@@ -38,11 +39,14 @@ export function CsvEditView() {
   function handleEditorChange(csv: string) {
     useStateStore.setState({ csv });
     setEditorTouched(true);
+    setSubmitDisabled(true);
+    setTimeout(() => setSubmitDisabled(false), 1500);
   }
 
   if (!schemaRecord || schemaError || schemaRecordError) return null;
 
   const buttonDisabled =
+    submitDisabled ||
     !editorTouched ||
     !csv ||
     csv.length < 10 ||
