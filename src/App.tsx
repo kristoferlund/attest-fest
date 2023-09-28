@@ -12,6 +12,7 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { useNetwork } from "wagmi";
 import { useSafe } from "./safe/hooks/useSafe";
 import { useStateStore } from "./zustand/hooks/useStateStore";
+import { Thumb } from "./components/bg/images/Thumb";
 
 function AppInner() {
   //Hooks
@@ -39,7 +40,7 @@ function AppInner() {
                     })
                   }
                 />
-                <div>
+                <div className="text-center">
                   Required signatures:
                   {selectedSafeAddress ? (
                     <>
@@ -149,9 +150,7 @@ function App() {
   );
 
   const renderNotConnectedToWallet = () => (
-    <div className="p-5 text-center">
-      Connect a wallet to start the attest fest!
-    </div>
+    <div className="p-5 text-center">Connect a wallet to start attesting!</div>
   );
 
   const renderNotSupportedNetwork = () => (
@@ -170,8 +169,29 @@ function App() {
     <>
       <Background />
       <Navbar />
-      <div className="flex justify-center pt-60 md:pt-36 ">
-        <div className="flex flex-col items-center justify-center gap-10 p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow mb-40 mx-5">
+      <div className="flex flex-col items-center justify-center gap-10 px-5 leading-loose pt-60 md:pt-36">
+        <div className="flex flex-col items-center p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow leading-loose text-center gap-10">
+          <div className="w-20 fill-theme4">
+            <Thumb />
+          </div>
+          <div>
+            Create multiple{" "}
+            <a href="https://attest.sh/" target="_blank" className="underline">
+              EAS attestations
+            </a>{" "}
+            using the power of CSV and{" "}
+            <a
+              href="https://safe.global/"
+              target="_blank"
+              className="underline"
+            >
+              Safe multisig wallets
+            </a>
+            .
+          </div>
+          <div>It's an attest fest, yaay!</div>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-10 p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow mb-40">
           {!chain?.id && renderNotConnectedToWallet()}
           {chain?.id &&
             !isConnnectedToSupportedChain &&

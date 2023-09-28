@@ -5,7 +5,7 @@
 /* @apply bg-gradient-to-bl from-theme1 to-theme3; */
 
 html {
-  @apply bg-theme1;
+  @apply bg-theme2;
 }
 
 body {
@@ -29,5 +29,5 @@ a {
 }
 
 .theme-shadow {
-  box-shadow: 0px 20px 80px 20px rgb(255 255 255 / 0.1);
+  box-shadow: 0px 20px 80px 20px rgb(110 81 154 / 0.3);
 }

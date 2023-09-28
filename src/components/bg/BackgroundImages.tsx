@@ -36,7 +36,7 @@ export const BackgroundImages: React.FC<BackgroundImagesProps> = ({
           <div
             key={`${index}-${repIndex}`}
             style={generateRandomStyle()}
-            className="absolute opacity-50 fill-theme2"
+            className="absolute opacity-50 fill-theme3"
           >
             {SvgComponent}
           </div>

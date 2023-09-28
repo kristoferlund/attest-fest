@@ -24,7 +24,7 @@ export function AccountDialog({ open, close }: AccountDialogProps) {
       {/* Full-screen container to center the panel */}
       <div className="fixed inset-0 flex items-center justify-center">
         {/* The actual dialog panel  */}
-        <Dialog.Panel className="flex flex-col gap-3 p-5 mx-auto border bg-theme1 w-96 rounded-xl theme-shadow">
+        <Dialog.Panel className="flex flex-col gap-3 p-5 mx-auto border bg-theme1 w-80 rounded-xl theme-shadow">
           <Dialog.Title className="flex justify-between">
             Account
             <button onClick={close}>
@@ -32,16 +32,15 @@ export function AccountDialog({ open, close }: AccountDialogProps) {
             </button>
           </Dialog.Title>
 
-          <div className="flex justify-between p-5 border">
+          <div
+            className="flex justify-between p-5 border hover:bg-theme2"
+            onClick={() => {
+              close();
+              disconnect();
+            }}
+          >
             {ensName ?? shortenEthAddress(address)}
-            <button
-              onClick={() => {
-                close();
-                disconnect();
-              }}
-            >
-              <FontAwesomeIcon icon={faRightFromBracket} className="w-4 h-4" />
-            </button>
+            <FontAwesomeIcon icon={faRightFromBracket} className="w-4 h-4" />
           </div>
         </Dialog.Panel>
       </div>

@@ -68,7 +68,7 @@ export function AttestDialogExecute({
             Transaction requires no more confirmations and is ready to be
             executed.
           </div>
-          <div className="flex justify-center gap-5">
+          <div className="flex flex-col justify-center w-full gap-5 md:flex-row">
             <Button onClick={onClose}>Close</Button>
 
             <Button
