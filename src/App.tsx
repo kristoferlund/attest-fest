@@ -173,13 +173,19 @@ function App() {
       <Navbar />
       <div className="flex flex-col items-center justify-center gap-10 px-5 pb-10 leading-loose pt-60 md:pt-36">
         <div className="flex flex-col items-center p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow leading-loose text-center gap-10">
-          <div className="flex items-center gap-5 text-2xl">
+          <div className="flex flex-wrap items-center justify-center gap-5 text-2xl">
             <a href="https://safe.global/" target="_blank">
-              <img src="/safe.png" className="inline-block h-10 rounded-sm" />
+              <img
+                src="/safe.png"
+                className="inline-block w-10 h-10 rounded-sm max-w-none"
+              />
             </a>
             +
             <a href="https://attest.sh/" target="_blank">
-              <img src="/eas.png" className="inline-block h-10" />
+              <img
+                src="/eas.png"
+                className="inline-block w-8 h-10 max-w-none"
+              />
             </a>
             =
             <div className="w-10 h-10 fill-theme4">
