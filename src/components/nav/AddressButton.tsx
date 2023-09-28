@@ -1,22 +1,17 @@
-import { useAccount, useConnect, useEnsName } from "wagmi";
+import { useAccount, useEnsName } from "wagmi";
 
 import { AccountDialog } from "../AccountDialog";
-import { Button } from "../ui/Button";
 import { shortenEthAddress } from "../../eth/util/shortenEthAddress";
 import { useState } from "react";
+import { ConnectButton } from "./ConnectButton";
 
-export function Address() {
+export function AddressButton() {
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
-  const { connect, connectors } = useConnect();
   const [isOpen, setIsOpen] = useState(false);
 
   if (!isConnected) {
-    return (
-      <Button onClick={() => connect({ connector: connectors[0] })}>
-        Connect Wallet
-      </Button>
-    );
+    return <ConnectButton />;
   }
 
   return (

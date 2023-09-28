@@ -1,4 +1,4 @@
-import { Address } from "./Address";
+import { AddressButton } from "./AddressButton";
 import { Chain } from "./Chain";
 
 export function Navbar() {
@@ -9,7 +9,7 @@ export function Navbar() {
       </div>
       <div className="flex flex-col gap-3 md:flex-row">
         <Chain />
-        <Address />
+        <AddressButton />
       </div>
     </div>
   );
