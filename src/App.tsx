@@ -184,7 +184,7 @@ function App() {
             <a href="https://attest.sh/" target="_blank">
               <img
                 src="/eas.png"
-                className="inline-block w-8 h-10 max-w-none"
+                className="inline-block h-10 w-9 max-w-none"
               />
             </a>
             =
