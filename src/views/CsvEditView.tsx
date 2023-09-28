@@ -57,7 +57,8 @@ export function CsvEditView() {
     <>
       <p className="leading-loose text-center">
         Paste data or drop a csv file in the form below. In addition to the
-        schema fields, you also need to include the recipient field.
+        schema fields, you also need to include the recipient field for every
+        row.
       </p>
 
       <SchemaPills />

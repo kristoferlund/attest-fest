@@ -13,6 +13,8 @@ import { useNetwork } from "wagmi";
 import { useSafe } from "./safe/hooks/useSafe";
 import { useStateStore } from "./zustand/hooks/useStateStore";
 import { Thumb } from "./components/bg/images/Thumb";
+import { Hat } from "./components/bg/images/Hat";
+import { Pop } from "./components/bg/images/Pop";
 
 function AppInner() {
   //Hooks
@@ -171,8 +173,24 @@ function App() {
       <Navbar />
       <div className="flex flex-col items-center justify-center gap-10 px-5 leading-loose pt-60 md:pt-36">
         <div className="flex flex-col items-center p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow leading-loose text-center gap-10">
-          <div className="w-20 fill-theme4">
-            <Thumb />
+          <div className="flex items-center gap-5 text-2xl">
+            <a href="https://safe.global/" target="_blank">
+              <img src="/safe.png" className="inline-block h-10 rounded-sm" />
+            </a>
+            +
+            <a href="https://attest.sh/" target="_blank">
+              <img src="/eas.png" className="inline-block h-10" />
+            </a>
+            =
+            <div className="w-10 h-10 fill-theme4">
+              <Thumb />
+            </div>
+            <div className="w-10 h-10 fill-theme4">
+              <Hat />
+            </div>
+            <div className="w-10 h-10 fill-theme4">
+              <Pop />
+            </div>
           </div>
           <div>
             Create multiple{" "}
