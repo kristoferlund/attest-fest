@@ -1,6 +1,6 @@
 import { configureChains, createConfig, mainnet } from "wagmi";
 
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { InjectedConnector } from "wagmi/connectors/injected";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { optimism } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
@@ -17,7 +17,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 
 export const wagmiConfig = createConfig({
   autoConnect: true,
-  connectors: [new MetaMaskConnector({ chains })],
+  connectors: [new InjectedConnector({ chains })],
   publicClient,
   webSocketPublicClient,
 });
