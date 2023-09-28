@@ -29,6 +29,10 @@ Creating attestations should be easy! Attest Fest is a tool that allows you to c
 4. Upload a CSV file with the attestations you want to create
 5. Sign the transaction and wait for the attestations to be created
 
+## Try it out
+
+### 🎉 [attest-fest.party](https://attest-fest.party)
+
 ## About Attestations
 
 Attestations are digital signatures on a structured piece of information. They play a critical role whenever you need to prove or verify something. EAS enables anyone to make attestations onchain or offchain about anything, fostering a more trustful and transparent world.
