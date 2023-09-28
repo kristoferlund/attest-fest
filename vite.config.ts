@@ -3,23 +3,7 @@ import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfil
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import rollupNodePolyFill from "rollup-plugin-polyfill-node";
-
-// // https://vitejs.dev/config/
-// export default defineConfig({
-//   ...(process.env.NODE_ENV === "development"
-//     ? {
-//         define: {
-//           global: "window",
-//           process: {
-//             env: {
-//               TEST_NETWORK: "",
-//             },
-//           },
-//         },
-//       }
-//     : {}),
-//   plugins: [react()],
-// });
+//import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
   plugins: [react()],

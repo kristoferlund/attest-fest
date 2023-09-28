@@ -8,11 +8,6 @@ type SchemaInputProps = {
 export function SchemaInput({ onChange, value }: SchemaInputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    setIsFocused(true);
-    e.target.select();
-  };
-
   const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
     input.select();

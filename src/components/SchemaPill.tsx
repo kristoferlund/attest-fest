@@ -1,4 +1,4 @@
-import { SchemaField } from "../types/schema-field.type";
+import { SchemaField } from "../eas/types/schema-field.type";
 
 type SchemaPillProps = {
   field: SchemaField;
