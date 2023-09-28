@@ -171,7 +171,7 @@ function App() {
     <>
       <Background />
       <Navbar />
-      <div className="flex flex-col items-center justify-center gap-10 px-5 leading-loose pt-60 md:pt-36">
+      <div className="flex flex-col items-center justify-center gap-10 px-5 pb-10 leading-loose pt-60 md:pt-36">
         <div className="flex flex-col items-center p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow leading-loose text-center gap-10">
           <div className="flex items-center gap-5 text-2xl">
             <a href="https://safe.global/" target="_blank">
@@ -193,7 +193,7 @@ function App() {
             </div>
           </div>
           <div>
-            Create multiple{" "}
+            Create multiple onchain{" "}
             <a href="https://attest.sh/" target="_blank" className="underline">
               EAS attestations
             </a>{" "}
@@ -209,13 +209,16 @@ function App() {
           </div>
           <div>It's an attest fest, yaay!</div>
         </div>
-        <div className="flex flex-col items-center justify-center gap-10 p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow mb-40">
+        <div className="flex flex-col items-center justify-center gap-10 p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow">
           {!chain?.id && renderNotConnectedToWallet()}
           {chain?.id &&
             !isConnnectedToSupportedChain &&
             renderNotSupportedNetwork()}
           {chain?.id && isConnnectedToSupportedChain && renderAppInner()}
         </div>
+        <a href="https://github.com/kristoferlund/attest-fest" target="_blank">
+          <img src="/github.png" className="h-10" />
+        </a>
       </div>
     </>
   );
