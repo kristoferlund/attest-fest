@@ -183,20 +183,6 @@ function App() {
       <div className="flex flex-col items-center justify-center gap-10 px-5 pb-10 leading-loose pt-60 md:pt-36">
         <div className="flex flex-col items-center p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow leading-loose text-center gap-10">
           <div className="flex flex-wrap items-center justify-center gap-5 text-2xl">
-            <a href="https://safe.global/" target="_blank">
-              <img
-                src="/safe.png"
-                className="inline-block w-10 h-10 rounded-sm max-w-none"
-              />
-            </a>
-            +
-            <a href="https://attest.sh/" target="_blank">
-              <img
-                src="/eas.png"
-                className="inline-block h-10 w-9 max-w-none"
-              />
-            </a>
-            =
             <div className="w-10 h-10 fill-theme4">
               <Thumb />
             </div>
@@ -208,11 +194,24 @@ function App() {
             </div>
           </div>
           <div>
-            Create multiple onchain{" "}
+            Batch create onchain
+            <a href="https://attest.sh/" target="_blank">
+              <img
+                src="/eas.png"
+                className="inline-block h-6 pb-1 mx-2 max-w-none"
+              />
+            </a>
             <a href="https://attest.sh/" target="_blank" className="underline">
               EAS attestations
             </a>{" "}
-            using the power of CSV and{" "}
+            using the power of CSV and copy/paste. Supports any old ETH wallet
+            as well as fancy new
+            <a href="https://safe.global/" target="_blank">
+              <img
+                src="/safe.png"
+                className="inline-block h-6 pb-1 mx-2 max-w-none"
+              />
+            </a>
             <a
               href="https://safe.global/"
               target="_blank"
