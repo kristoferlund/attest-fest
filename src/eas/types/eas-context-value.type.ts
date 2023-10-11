@@ -31,5 +31,6 @@ export type EasContext = {
   schemaError?: Error;
 
   safeTransactionState?: SafeTransactionState;
-  createAttestationsTransaction?: (csv: string) => Promise<void>;
+  createSafeAttestationsTransaction?: (csv: string) => Promise<void>;
+  createEoaAttestationsTransaction?: (csv: string) => Promise<void>;
 };

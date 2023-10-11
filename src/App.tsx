@@ -152,7 +152,7 @@ function App() {
   const { chain } = useNetwork();
 
   // Global state
-  const selectedSafeAddress = useStateStore(
+  const selectedWalletAddress = useStateStore(
     (state) => state.selectedWalletAddress
   );
 
@@ -171,7 +171,7 @@ function App() {
   );
 
   const renderAppInner = () => (
-    <SafeContextProvider address={selectedSafeAddress}>
+    <SafeContextProvider address={selectedWalletAddress}>
       <AppInner />
     </SafeContextProvider>
   );

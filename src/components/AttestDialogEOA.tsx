@@ -122,7 +122,7 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
           ) : (
             <>
               <div className="px-10 text-center">
-                Submitting will propose a Safe transaction to create{" "}
+                Submitting will create a transaction to create{" "}
                 <strong>{parsedCsv.length}</strong> attestation
                 {parsedCsv.length > 1 && "s"}.
               </div>
