@@ -21,7 +21,7 @@ export function Chain() {
   // Clear selected safe on chain switch
   function clearSelectedSafe() {
     if (!isLoading) return;
-    useStateStore.setState({ selectedSafeAddress: "" });
+    useStateStore.setState({ selectedWalletAddress: "" });
   }
   useEffect(clearSelectedSafe, [isLoading]);
 

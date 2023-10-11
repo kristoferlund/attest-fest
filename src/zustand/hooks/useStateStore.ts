@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type GlobalState = {
-  selectedSafeAddress: string;
+  selectedWalletAddress: string;
   schemaUid: string;
   schema?: SchemaField[];
   csv: string;
@@ -15,7 +15,7 @@ type GlobalState = {
 export const useStateStore = create(
   persist<GlobalState>(
     () => ({
-      selectedSafeAddress: "",
+      selectedWalletAddress: "",
       schemaUid: "",
       csv: "",
       showTransaction: false,

@@ -1,30 +1,37 @@
+import { useAccount, useNetwork } from "wagmi";
+
 import { Background } from "./components/bg/Background";
 import { CsvEditView } from "./views/CsvEditView";
 import { EasContextProvider } from "./eas/components/EasContextProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Hat } from "./components/bg/images/Hat";
 import { Navbar } from "./components/nav/Navbar";
+import { Pop } from "./components/bg/images/Pop";
 import { SafeContextProvider } from "./safe/components/SafeContextProvider";
-import { SafeSelect } from "./components/SafeSelect";
 import { SchemaInformation } from "./components/SchemaInformation";
 import { SchemaInput } from "./components/SchemaInput";
+import { Thumb } from "./components/bg/images/Thumb";
+import { WalletSelect } from "./components/SafeSelect";
 import { easConfig } from "./eas/eas.config";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { useNetwork } from "wagmi";
 import { useSafe } from "./safe/hooks/useSafe";
 import { useStateStore } from "./zustand/hooks/useStateStore";
-import { Thumb } from "./components/bg/images/Thumb";
-import { Hat } from "./components/bg/images/Hat";
-import { Pop } from "./components/bg/images/Pop";
 
 function AppInner() {
   //Hooks
   const { safes, owners, threshold } = useSafe();
+  const { address } = useAccount();
 
   // Global state
-  const selectedSafeAddress = useStateStore(
-    (state) => state.selectedSafeAddress
+  const selectedWalletAddress = useStateStore(
+    (state) => state.selectedWalletAddress
   );
   const schemaUid = useStateStore((state) => state.schemaUid);
+
+  const selectWalletAddress = (selectedAddress: string) =>
+    useStateStore.setState({
+      selectedWalletAddress: selectedAddress,
+    });
 
   return (
     <>
@@ -33,25 +40,27 @@ function AppInner() {
           {safes.length > 0 ? (
             <>
               <div className="flex flex-col items-center gap-10 md:hidden">
-                <div className="underline">Safe account</div>
-                <SafeSelect
-                  selectedSafeAddress={selectedSafeAddress}
+                <div className="underline">Wallet</div>
+                <WalletSelect
+                  selectedAddress={selectedWalletAddress}
                   onChange={(address) =>
                     useStateStore.setState({
-                      selectedSafeAddress: address,
+                      selectedWalletAddress: address,
                     })
                   }
                 />
-                <div className="text-center">
-                  Required signatures:
-                  {selectedSafeAddress ? (
-                    <>
-                      {threshold} out of {owners.length} owners.
-                    </>
-                  ) : (
-                    <>-</>
-                  )}
-                </div>
+                {selectedWalletAddress !== address && (
+                  <div className="text-center">
+                    Required signatures:
+                    {selectedWalletAddress ? (
+                      <>
+                        {threshold} out of {owners.length} owners.
+                      </>
+                    ) : (
+                      <>-</>
+                    )}
+                  </div>
+                )}
                 <div className="underline">Schema UID</div>
                 <SchemaInput
                   value={schemaUid}
@@ -60,60 +69,60 @@ function AppInner() {
                   }
                 />
               </div>
-              <table className="min-w-full table-auto text-[8px] text-xs hidden md:block">
-                <tbody>
-                  <tr>
-                    <td>
-                      <div className="flex items-center justify-end w-full px-2">
-                        Safe account
-                      </div>
-                    </td>
-                    <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
-                      <SafeSelect
-                        selectedSafeAddress={selectedSafeAddress}
-                        onChange={(address) =>
-                          useStateStore.setState({
-                            selectedSafeAddress: address,
-                          })
-                        }
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div className="flex items-center justify-end w-full px-2 whitespace-nowrap">
-                        Required signatures
-                      </div>
-                    </td>
-                    <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
-                      <div className="flex items-center whitespace-nowrap">
-                        {selectedSafeAddress ? (
-                          <>
-                            {threshold} out of {owners.length} owners.
-                          </>
-                        ) : (
-                          <>-</>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div className="flex items-center justify-end w-full px-2">
-                        Schema UID
-                      </div>
-                    </td>
-                    <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
-                      <SchemaInput
-                        value={schemaUid}
-                        onChange={(schemaUid) =>
-                          useStateStore.setState({ schemaUid })
-                        }
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="flex justify-end w-full">
+                <table className=" table-auto text-[8px] text-xs hidden md:block">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div className="flex items-center justify-end w-full px-2">
+                          Wallet
+                        </div>
+                      </td>
+                      <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
+                        <WalletSelect
+                          selectedAddress={selectedWalletAddress}
+                          onChange={selectWalletAddress}
+                        />
+                      </td>
+                    </tr>
+                    {selectedWalletAddress !== address && (
+                      <tr>
+                        <td>
+                          <div className="flex items-center justify-end w-full px-2 whitespace-nowrap">
+                            Required signatures
+                          </div>
+                        </td>
+                        <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
+                          <div className="flex items-center whitespace-nowrap">
+                            {selectedWalletAddress ? (
+                              <>
+                                {threshold} out of {owners.length} owners.
+                              </>
+                            ) : (
+                              <>-</>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    <tr>
+                      <td>
+                        <div className="flex items-center justify-end w-full px-2">
+                          Schema UID
+                        </div>
+                      </td>
+                      <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
+                        <SchemaInput
+                          value={schemaUid}
+                          onChange={(schemaUid) =>
+                            useStateStore.setState({ schemaUid })
+                          }
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
               {schemaUid && (
                 <EasContextProvider schemaUid={schemaUid}>
@@ -144,7 +153,7 @@ function App() {
 
   // Global state
   const selectedSafeAddress = useStateStore(
-    (state) => state.selectedSafeAddress
+    (state) => state.selectedWalletAddress
   );
 
   const isConnnectedToSupportedChain = easConfig.some(

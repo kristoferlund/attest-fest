@@ -8,11 +8,11 @@ import { useAccount } from "wagmi";
 
 type WalletSelectProps = {
   onChange: (address: string) => void;
-  selectedSafeAddress?: string;
+  selectedAddress?: string;
 };
 
-export function SafeSelect({
-  selectedSafeAddress,
+export function WalletSelect({
+  selectedAddress: selectedAddress,
   onChange,
 }: WalletSelectProps) {
   const { safes } = useSafe();
@@ -22,15 +22,22 @@ export function SafeSelect({
     return null;
   }
 
-  const selectedAddressInSafes = safes.includes(selectedSafeAddress || "");
-
   return (
     <div className="relative">
-      <Listbox value={selectedSafeAddress} onChange={onChange}>
+      <Listbox value={selectedAddress} onChange={onChange}>
         <Listbox.Button className="w-full p-2 text-left bg-opacity-50 cursor-pointer bg-theme2 hover:bg-opacity-100">
-          <div className="flex w-full">
+          <div className="flex items-center w-full">
+            {selectedAddress && selectedAddress === address ? (
+              <img
+                src="/ethereum.png"
+                className="h-4 ml-1 mr-2"
+                alt="Ethereum"
+              />
+            ) : (
+              <img src="/safe.png" className="h-4 mr-2" alt="Ethereum" />
+            )}
             <div className="w-56 overflow-clip overflow-ellipsis md:w-96">
-              {selectedAddressInSafes ? selectedSafeAddress : "-"}
+              {selectedAddress || "-"}
             </div>
             <FontAwesomeIcon icon={faChevronDown} className="pl-2" />
           </div>
