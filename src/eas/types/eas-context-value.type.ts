@@ -32,5 +32,4 @@ export type EasContext = {
 
   safeTransactionState?: SafeTransactionState;
   createSafeAttestationsTransaction?: (csv: string) => Promise<void>;
-  createEoaAttestationsTransaction?: (csv: string) => Promise<void>;
 };

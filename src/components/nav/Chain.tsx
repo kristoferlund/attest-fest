@@ -43,7 +43,7 @@ export function Chain() {
     );
   }
 
-  const bg = isChainIdSupported(chain.id) ? "bg-theme1" : "bg-red-500/50";
+  const bg = isChainIdSupported(chain.id) ? "bg-theme1" : "bg-red-500";
 
   return (
     <div className="relative">

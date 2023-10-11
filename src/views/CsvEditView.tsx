@@ -8,9 +8,12 @@ import { SchemaPills } from "../components/SchemaPills";
 import { isSchemaFieldTypeName } from "../eas/utils/isSchemaFieldTypeName";
 import { useEas } from "../eas/hooks/useEas";
 import { useStateStore } from "../zustand/hooks/useStateStore";
+import { useAccount } from "wagmi";
+import { AttestDialogEoa } from "../components/AttestDialogEoa";
 
 export function CsvEditView() {
   const { schemaRecord, schemaRecordError, schemaError } = useEas();
+  const { address } = useAccount();
 
   // Local state
   const [attestDialogOpen, setAttestDialogOpen] = useState(false);
@@ -20,6 +23,9 @@ export function CsvEditView() {
   // Global state
   const csv = useStateStore((state) => state.csv);
   const csvError = useStateStore((state) => state.csvError);
+  const selectedWalletAddress = useStateStore(
+    (state) => state.selectedWalletAddress
+  );
 
   function addRecipientToSchema() {
     if (!schemaRecord) return;
@@ -53,6 +59,8 @@ export function CsvEditView() {
     typeof csvError !== "undefined" ||
     attestDialogOpen;
 
+  const isSafeAddress = selectedWalletAddress !== address;
+
   return (
     <>
       <p className="leading-loose text-center">
@@ -77,12 +85,18 @@ export function CsvEditView() {
       >
         Submit
       </Button>
-      {attestDialogOpen && (
-        <AttestDialog
-          open={attestDialogOpen}
-          close={() => setAttestDialogOpen(false)}
-        />
-      )}
+      {attestDialogOpen &&
+        (isSafeAddress ? (
+          <AttestDialog
+            open={attestDialogOpen}
+            close={() => setAttestDialogOpen(false)}
+          />
+        ) : (
+          <AttestDialogEoa
+            open={attestDialogOpen}
+            close={() => setAttestDialogOpen(false)}
+          />
+        ))}
     </>
   );
 }

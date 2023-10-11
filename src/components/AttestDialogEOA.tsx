@@ -5,16 +5,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 
-import { AttestDialogExecute } from "./AttestDialogExecute";
+import { BaseError } from "viem";
 import { Button } from "./ui/Button";
 import { CopyButton } from "./bg/images/CopyButton";
 import { Dialog } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { parse } from "csv-parse/sync";
 import { shortenEthAddress } from "../eth/util/shortenEthAddress";
-import { useEas } from "../eas/hooks/useEas";
+import { useEasMultiAttest } from "../eas/hooks/useEasMultiAttest";
 import { useNetwork } from "wagmi";
-import { useSafe } from "../safe/hooks/useSafe";
 import { useSafeConfig } from "../safe/hooks/useSafeConfig";
 import { useStateStore } from "../zustand/hooks/useStateStore";
 
@@ -23,11 +22,11 @@ type AccountDialogProps = {
   close: () => void;
 };
 
-export function AttestDialog({ open, close }: AccountDialogProps) {
-  const { createSafeAttestationsTransaction, safeTransactionState } = useEas();
-  const { safeAddress } = useSafe();
+export function AttestDialogEoa({ open, close }: AccountDialogProps) {
+  const { contract, transaction } = useEasMultiAttest();
   const { chain } = useNetwork();
-  const safeConfig = useSafeConfig(chain?.id);
+  const config = useSafeConfig(chain?.id);
+
   //Local state
   const [parsedCsv, setParsedCsv] = useState<string[][]>([[]]);
 
@@ -47,32 +46,18 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
 
   useEffect(parseCsv, [csv]);
 
-  const submitButtonVisible =
-    typeof safeTransactionState === "undefined" ||
-    safeTransactionState?.status === "creating" ||
-    safeTransactionState?.status === "signing" ||
-    safeTransactionState?.status === "executing" ||
-    safeTransactionState?.status === "error";
-
-  const submitButtonDisabled =
-    safeTransactionState?.status === "creating" ||
-    safeTransactionState?.status === "signing" ||
-    safeTransactionState?.status === "executing";
-
-  const submitButtonWaiting = submitButtonDisabled;
-
   function submitButtonText() {
-    if (safeTransactionState?.status === "creating") {
-      return "Creating...";
+    if (contract.isLoading) {
+      return "Submitting";
     }
-    if (safeTransactionState?.status === "signing") {
-      return "Signing...";
-    }
-    if (safeTransactionState?.status === "executing") {
-      return "Executing...";
+    if (transaction.isFetching) {
+      return "Executing";
     }
     return "Submit";
   }
+
+  const pluralAttestation =
+    parsedCsv.length > 1 ? "attestations" : "attestation";
 
   return (
     <Dialog open={open} onClose={() => close()} className="relative z-50">
@@ -80,7 +65,7 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
       {/* Full-screen container to center the panel */}
-      <div className="fixed inset-0 flex items-center justify-center">
+      <div className="fixed inset-0 flex items-center justify-center leading-loose">
         {/* The actual dialog panel  */}
         <Dialog.Panel className="flex flex-col gap-10 p-5 mx-auto border bg-theme1 md:w-96 w-80 rounded-xl theme-shadow">
           <Dialog.Title className="flex justify-between">
@@ -90,68 +75,60 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
             </button>
           </Dialog.Title>
 
-          {safeTransactionState?.txHash &&
-          safeTransactionState.status === "created" ? (
+          {transaction.isSuccess ? (
             <div className="flex flex-col items-center gap-5">
               <FontAwesomeIcon icon={faCheckCircle} size="2x" />
               <div className="text-center">
-                Transaction proposed and signed!
+                Transaction executed, {pluralAttestation} created!
               </div>
               <div>
                 <a
-                  href={`https://app.safe.global/transactions/tx?id=multisig_${safeAddress}_${safeTransactionState?.txHash}&safe=${safeConfig?.safeChainAbbreviation}:${safeAddress}`}
+                  href={`${config?.explorerUrl}/tx/${contract.data?.hash}`}
                   target="_blank"
                   rel="noreferrer"
                   className="mx-1"
                 >
-                  {shortenEthAddress(safeTransactionState?.txHash || "")}
+                  {shortenEthAddress(contract.data?.hash || "")}
                 </a>
-                <CopyButton
-                  textToCopy={
-                    `https://app.safe.global/transactions/tx?id=multisig_${safeAddress}_${safeTransactionState?.txHash}&safe=${safeConfig?.safeChainAbbreviation}:${safeAddress}` ||
-                    ""
-                  }
-                />
+                <CopyButton textToCopy={`${contract.data?.hash}` || ""} />
               </div>
 
-              <AttestDialogExecute
-                safeTxHash={safeTransactionState.txHash}
-                onClose={close}
-              />
+              <Button onClick={close}>Close</Button>
             </div>
           ) : (
             <>
-              <div className="px-10 text-center">
-                Submitting will create a transaction to create{" "}
-                <strong>{parsedCsv.length}</strong> attestation
-                {parsedCsv.length > 1 && "s"}.
+              <div className="px-10 leading-loose text-center">
+                Submit a transaction to create{" "}
+                <strong>{parsedCsv.length}</strong> {pluralAttestation}.
               </div>
-              <div className="flex flex-col justify-center gap-5 md:flex-row">
-                <Button onClick={close}>
-                  {safeTransactionState?.status === "created"
-                    ? "Close"
-                    : "Cancel"}
-                </Button>
 
-                {submitButtonVisible && (
-                  <Button
-                    onClick={() => {
-                      createSafeAttestationsTransaction &&
-                        createSafeAttestationsTransaction(csv);
-                    }}
-                    disabled={submitButtonDisabled}
-                  >
-                    {submitButtonWaiting && (
-                      <FontAwesomeIcon
-                        icon={faCircleNotch}
-                        className="w-4 h-4 mr-2"
-                        spin
-                        size="2x"
-                      />
-                    )}
-                    <>{submitButtonText()}</>
-                  </Button>
-                )}
+              {contract.isError && (
+                <div className="px-10 leading-loose text-center text-red-500">
+                  {contract.error instanceof BaseError
+                    ? contract.error?.shortMessage
+                    : contract.error?.message}
+                </div>
+              )}
+
+              <div className="flex flex-col justify-center gap-5 md:flex-row">
+                <Button onClick={close}>Close</Button>
+
+                <Button
+                  onClick={() => {
+                    contract.write?.();
+                  }}
+                  disabled={contract.isLoading || transaction.isFetching}
+                >
+                  {(contract.isLoading || transaction.isFetching) && (
+                    <FontAwesomeIcon
+                      icon={faCircleNotch}
+                      className="w-4 h-4 mr-2"
+                      spin
+                      size="2x"
+                    />
+                  )}
+                  <>{submitButtonText()}</>
+                </Button>
               </div>
             </>
           )}

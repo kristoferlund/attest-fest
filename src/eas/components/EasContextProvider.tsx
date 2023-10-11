@@ -1,9 +1,7 @@
 import {
   EAS,
   SchemaEncoder,
-  SchemaItem,
   SchemaRegistry,
-  SchemaValue,
 } from "@ethereum-attestation-service/eas-sdk";
 import {
   MetaTransactionData,
@@ -11,6 +9,7 @@ import {
   SafeTransactionDataPartial,
 } from "@safe-global/safe-core-sdk-types";
 import React, { ReactNode, useEffect, useState } from "react";
+import { encodeRow, shouldIncludeRow } from "../utils/encodeCsv";
 import { useProvider, useSigner } from "../../wagmi/hooks/useSigner";
 
 import { EasContext } from "../types/eas-context-value.type";
@@ -121,55 +120,6 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
     });
   }
 
-  function encodeRow(row: string[]) {
-    if (!state.schema) {
-      throw new Error("Missing schema");
-    }
-
-    if (!state.schemaEncoder) {
-      throw new Error("Missing schemaEncoder");
-    }
-
-    // Encode the data
-    const items: SchemaItem[] = [];
-    for (let i = 0; i < state.schema.length; i++) {
-      const { name, type } = state.schema[i];
-      let value: SchemaValue;
-      if (type.startsWith("uint")) {
-        value = BigInt(row[i]);
-      } else {
-        switch (type) {
-          case "address":
-            value = row[i];
-            break;
-          case "string":
-            value = row[i];
-            break;
-          case "bool":
-            value = row[i] === "true";
-            break;
-          case "bytes32":
-            value = row[i];
-            break;
-          case "bytes":
-            value = row[i];
-            break;
-          default:
-            value = row[i];
-            break;
-        }
-      }
-
-      items.push({
-        name,
-        value,
-        type,
-      });
-    }
-
-    return state.schemaEncoder.encodeData(items);
-  }
-
   const createSafeAttestationsTransaction = async (
     csv: string
   ): Promise<void> => {
@@ -198,30 +148,11 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
       const parsedCsv: string[][] = parseCsv(csv);
 
       for (const row of parsedCsv) {
-        // Skip optional header row
-        // First value matches first schema column name = header row
-        if (row[0] === state.schema[0].name) {
+        if (!shouldIncludeRow(row, state.schema)) {
           continue;
         }
 
-        // Skip empty rows
-        if (row.length === 0 || (row.length === 1 && row[0] === "")) {
-          continue;
-        }
-
-        // Skip rows with no recipient
-        if (row[row.length - 1] === "") {
-          continue;
-        }
-
-        // Check if the row has the correct number of columns
-        if (row.length !== state.schema.length + 1) {
-          throw new Error(
-            `Invalid number of columns in row ${parsedCsv.indexOf(row) + 1}`
-          );
-        }
-
-        const encodedData = encodeRow(row);
+        const encodedData = encodeRow(row, state.schema, state.schemaEncoder);
 
         // Create the transaction data
         const txData: SafeTransactionDataPartial = {
@@ -302,8 +233,6 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
     }
   };
 
-  function createEasAttestationsTransaction(csv: string): void {}
-
   useEffect(initEas, [easConfig?.address]);
   useEffect(loadSchemaRecord, [easConfig, rpcProvider, schemaUid]);
   useEffect(createSchemaFromRecord, [state.schemaRecord]);
@@ -312,7 +241,6 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
   const context = {
     ...state,
     createSafeAttestationsTransaction,
-    createEasAttestationsTransaction,
   };
 
   return (

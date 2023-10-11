@@ -80,7 +80,7 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
       {/* Full-screen container to center the panel */}
-      <div className="fixed inset-0 flex items-center justify-center">
+      <div className="fixed inset-0 flex items-center justify-center leading-loose">
         {/* The actual dialog panel  */}
         <Dialog.Panel className="flex flex-col gap-10 p-5 mx-auto border bg-theme1 md:w-96 w-80 rounded-xl theme-shadow">
           <Dialog.Title className="flex justify-between">
