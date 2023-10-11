@@ -7,7 +7,7 @@
   <h1 align="center">Attest Fest!</h1>
 
 <p align="center">
-  Create multiple EAS attestations using the power of CSV and Safe multisig wallets. It's an attest fest, yaay!
+  Batch create onchain EAS attestations using the power of CSV and copy/paste. Supports any old ETH wallet as well as fancy new Safe multisig wallets. It's an attest fest, yaay!
 </p>
 
 <p align="center">
@@ -24,10 +24,10 @@
 Creating attestations should be easy! Attest Fest is a tool that allows you to create multiple EAS attestations using only one Ethereum transaction. Attest Fest integrates with [Ethereum Attestation Service](https://attest.sh) and [Safe multisig wallets](https://safe.global) to enable anyone to create onchain attestations about anything, fostering a more trustful and transparent world.
 
 1. Connect your wallet
-2. Choose a Safe account
+2. Choose an address or Safe account
 3. Select a schema to create attestations for
 4. Upload a CSV file with the attestations you want to create
-5. Sign the transaction and wait for the attestations to be created
+5. Create the attestations using one Ethereum transaction
 
 ## Try it out
 
