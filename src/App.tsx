@@ -43,6 +43,9 @@ function AppInner() {
         if (selectedWalletAddress && !safes.includes(selectedWalletAddress)) {
           selectWalletAddress(address);
         }
+        if (!selectedWalletAddress) {
+          selectWalletAddress(address);
+        }
       }
     }
   }, [address, safes, selectedWalletAddress]);
