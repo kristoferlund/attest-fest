@@ -14,6 +14,7 @@ import { Thumb } from "./components/bg/images/Thumb";
 import { WalletSelect } from "./components/SafeSelect";
 import { easConfig } from "./eas/eas.config";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { useEffect } from "react";
 import { useSafe } from "./safe/hooks/useSafe";
 import { useStateStore } from "./zustand/hooks/useStateStore";
 
@@ -33,112 +34,111 @@ function AppInner() {
       selectedWalletAddress: selectedAddress,
     });
 
+  // Reset selected wallet on address change
+  useEffect(() => {
+    if (address && safes) {
+      if (safes.length === 0) {
+        selectWalletAddress(address);
+      } else {
+        if (selectedWalletAddress && !safes.includes(selectedWalletAddress)) {
+          selectWalletAddress(address);
+        }
+      }
+    }
+  }, [address, safes, selectedWalletAddress]);
+
   return (
     <>
       {safes ? (
         <>
-          {safes.length > 0 ? (
-            <>
-              <div className="flex flex-col items-center gap-10 md:hidden">
-                <div className="underline">Wallet</div>
-                <WalletSelect
-                  selectedAddress={selectedWalletAddress}
-                  onChange={(address) =>
-                    useStateStore.setState({
-                      selectedWalletAddress: address,
-                    })
-                  }
-                />
-                {selectedWalletAddress !== address && (
-                  <div className="text-center">
-                    Required signatures:
-                    {selectedWalletAddress ? (
-                      <>
-                        {threshold} out of {owners.length} owners.
-                      </>
-                    ) : (
-                      <>-</>
-                    )}
-                  </div>
+          <div className="flex flex-col items-center gap-10 md:hidden">
+            <div className="underline">Wallet</div>
+            <WalletSelect
+              selectedAddress={selectedWalletAddress}
+              onChange={(address) =>
+                useStateStore.setState({
+                  selectedWalletAddress: address,
+                })
+              }
+            />
+            {selectedWalletAddress !== address && (
+              <div className="text-center">
+                Required signatures:
+                {selectedWalletAddress ? (
+                  <>
+                    {threshold} out of {owners.length} owners.
+                  </>
+                ) : (
+                  <>-</>
                 )}
-                <div className="underline">Schema UID</div>
-                <SchemaInput
-                  value={schemaUid}
-                  onChange={(schemaUid) =>
-                    useStateStore.setState({ schemaUid })
-                  }
-                />
               </div>
-              <div className="flex justify-end w-full">
-                <table className=" table-auto text-[8px] text-xs hidden md:block">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div className="flex items-center justify-end w-full px-2">
-                          Wallet
-                        </div>
-                      </td>
-                      <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
-                        <WalletSelect
-                          selectedAddress={selectedWalletAddress}
-                          onChange={selectWalletAddress}
-                        />
-                      </td>
-                    </tr>
-                    {selectedWalletAddress !== address && (
-                      <tr>
-                        <td>
-                          <div className="flex items-center justify-end w-full px-2 whitespace-nowrap">
-                            Required signatures
-                          </div>
-                        </td>
-                        <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
-                          <div className="flex items-center whitespace-nowrap">
-                            {selectedWalletAddress ? (
-                              <>
-                                {threshold} out of {owners.length} owners.
-                              </>
-                            ) : (
-                              <>-</>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                    <tr>
-                      <td>
-                        <div className="flex items-center justify-end w-full px-2">
-                          Schema UID
-                        </div>
-                      </td>
-                      <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
-                        <SchemaInput
-                          value={schemaUid}
-                          onChange={(schemaUid) =>
-                            useStateStore.setState({ schemaUid })
-                          }
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            )}
+            <div className="underline">Schema UID</div>
+            <SchemaInput
+              value={schemaUid}
+              onChange={(schemaUid) => useStateStore.setState({ schemaUid })}
+            />
+          </div>
+          <div className="flex justify-end w-full">
+            <table className=" table-auto text-[8px] text-xs hidden md:block">
+              <tbody>
+                <tr>
+                  <td>
+                    <div className="flex items-center justify-end w-full px-2">
+                      Wallet
+                    </div>
+                  </td>
+                  <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
+                    <WalletSelect
+                      selectedAddress={selectedWalletAddress}
+                      onChange={selectWalletAddress}
+                    />
+                  </td>
+                </tr>
+                {selectedWalletAddress !== address && (
+                  <tr>
+                    <td>
+                      <div className="flex items-center justify-end w-full px-2 whitespace-nowrap">
+                        Required signatures
+                      </div>
+                    </td>
+                    <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
+                      <div className="flex items-center whitespace-nowrap">
+                        {selectedWalletAddress ? (
+                          <>
+                            {threshold} out of {owners.length} owners.
+                          </>
+                        ) : (
+                          <>-</>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )}
+                <tr>
+                  <td>
+                    <div className="flex items-center justify-end w-full px-2">
+                      Schema UID
+                    </div>
+                  </td>
+                  <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
+                    <SchemaInput
+                      value={schemaUid}
+                      onChange={(schemaUid) =>
+                        useStateStore.setState({ schemaUid })
+                      }
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-              {schemaUid && (
-                <EasContextProvider schemaUid={schemaUid}>
-                  <SchemaInformation />
-                  <CsvEditView />
-                </EasContextProvider>
-              )}
-            </>
-          ) : (
-            <div className="p-5 text-center text-white bg-red-500">
-              The connected address is not the owner of any Safe account.
-              Connect with another wallet or create a safe at{" "}
-              <a href="https://safe.global/" target="_blank">
-                safe.global
-              </a>
-            </div>
+          {schemaUid && (
+            <EasContextProvider schemaUid={schemaUid}>
+              <SchemaInformation />
+              <CsvEditView />
+            </EasContextProvider>
           )}
         </>
       ) : (
