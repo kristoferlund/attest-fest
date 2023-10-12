@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 
+- Prevent editor from wrapping long lines
 - Correctly handle schemas with/without additional spaces
 - Editor now remembers cursor position when validating CSV data.
 
