@@ -8,6 +8,7 @@ import {
 } from "slate";
 import { Editable, ReactEditor, Slate, withReact } from "slate-react";
 import { faCircleNotch, faFileImport } from "@fortawesome/free-solid-svg-icons";
+import { lineColToSlatePoint, slatePointToLineCol } from "../slate/columns";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { CsvEditorLeaf } from "./CsvEditorLeaf";
@@ -93,6 +94,16 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
   const editor = useMemo(() => withReact(createEditor()), []);
 
   const updateCsvContent = (content: string, schemaData: SchemaField[]) => {
+    const currentSelection = editor.selection;
+    const lineCol = slatePointToLineCol(
+      editor,
+      currentSelection?.anchor.path,
+      currentSelection?.anchor.offset
+    );
+
+    const allNodes = Array.from(Node.descendants(editor));
+    console.log(allNodes);
+
     try {
       let csvHasErrors = false;
       const rows = parseCsvAndValidate(content, schemaData);
@@ -127,6 +138,21 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
         }
       }
       !csvHasErrors && onCsvError(undefined);
+
+      if (lineCol) {
+        const newPoint = lineColToSlatePoint(
+          editor,
+          lineCol.line,
+          lineCol.column
+        );
+        if (newPoint) {
+          const newSelection = {
+            anchor: newPoint,
+            focus: newPoint,
+          };
+          Transforms.select(editor, newSelection);
+        }
+      }
     } catch (error) {
       console.error(error);
       onCsvError(error as Error);
@@ -137,7 +163,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
   const debouncedUpdate = useRef(
     debounce((newValue: Descendant[], schemaData: SchemaField[]) => {
       updateCsvContent(serializeToCsv(newValue), schemaData);
-    }, 1500)
+    }, 500)
   ).current;
 
   const handleContentChange = useCallback(
