@@ -13,7 +13,8 @@ export function slatePointToLineCol(
   if (!path || !offset) return null; // Invalid path
 
   const [lineIndex, cellIndex] = path;
-  const lineNode = root.children[lineIndex];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const lineNode = (root as any).children[lineIndex];
   if (!lineNode || !lineNode.children[cellIndex]) return null; // Invalid path
 
   // Calculate the column position
@@ -31,7 +32,8 @@ export function lineColToSlatePoint(
   line: number,
   column: number
 ): Point | null {
-  const lineNode = root.children[line];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const lineNode = (root as any).children[line];
   if (!lineNode) return null; // Line does not exist
 
   let columnIndex = 0;

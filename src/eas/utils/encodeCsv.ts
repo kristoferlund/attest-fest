@@ -25,7 +25,7 @@ export function shouldIncludeRow(row: string[], schema: SchemaField[]) {
   }
 
   // Check if the row has the correct number of columns
-  if (row.length !== schema.length + 1) {
+  if (row.length !== schema.length) {
     throw new Error(`Invalid number of columns in row`);
   }
 
@@ -39,7 +39,8 @@ export function encodeRow(
 ) {
   // Encode the data
   const items: SchemaItem[] = [];
-  for (let i = 0; i < schema.length; i++) {
+  for (let i = 0; i < schema.length - 1; i++) {
+    // -1 to skip recipient
     const { name, type } = schema[i];
     let value: SchemaValue;
     if (type.startsWith("uint")) {

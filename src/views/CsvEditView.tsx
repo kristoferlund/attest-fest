@@ -1,15 +1,12 @@
-import { useEffect, useState } from "react";
-
 import { AttestDialog } from "../components/AttestDialog";
+import { AttestDialogEoa } from "../components/AttestDialogEoa";
 import { Button } from "../components/ui/Button";
 import CsvEditor from "../components/CsvEditor";
-import { SchemaField } from "../eas/types/schema-field.type";
 import { SchemaPills } from "../components/SchemaPills";
-import { isSchemaFieldTypeName } from "../eas/utils/isSchemaFieldTypeName";
-import { useEas } from "../eas/hooks/useEas";
-import { useStateStore } from "../zustand/hooks/useStateStore";
 import { useAccount } from "wagmi";
-import { AttestDialogEoa } from "../components/AttestDialogEoa";
+import { useEas } from "../eas/hooks/useEas";
+import { useState } from "react";
+import { useStateStore } from "../zustand/hooks/useStateStore";
 
 export function CsvEditView() {
   const { schemaRecord, schemaRecordError, schemaError } = useEas();
@@ -26,21 +23,6 @@ export function CsvEditView() {
   const selectedWalletAddress = useStateStore(
     (state) => state.selectedWalletAddress
   );
-
-  function addRecipientToSchema() {
-    if (!schemaRecord) return;
-    const schema: SchemaField[] = [];
-    schemaRecord.schema.split(",").forEach((field) => {
-      const [type, name] = field.split(" ");
-      if (isSchemaFieldTypeName(type)) {
-        schema.push({ name, type });
-      }
-    });
-    schema.push({ name: "recipient", type: "address" });
-    useStateStore.setState({ schema });
-  }
-
-  useEffect(addRecipientToSchema, [schemaRecord]);
 
   function handleEditorChange(csv: string) {
     useStateStore.setState({ csv });

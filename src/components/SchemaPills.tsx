@@ -1,8 +1,8 @@
 import { SchemaPill } from "./SchemaPill";
-import { useStateStore } from "../zustand/hooks/useStateStore";
+import { useEas } from "../eas/hooks/useEas";
 
 export function SchemaPills() {
-  const schema = useStateStore((state) => state.schema);
+  const { schema } = useEas();
 
   if (!schema) return null;
 

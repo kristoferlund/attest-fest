@@ -24,6 +24,7 @@ export type EasContext = {
   schemaUid: string;
   eas?: EAS;
   schemaEncoder?: SchemaEncoder;
+  schemaEncoderError?: Error;
   schemaRecordIsLoading?: boolean;
   schemaRecord?: SchemaRecord;
   schemaRecordError?: Error;

@@ -55,6 +55,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
     void (async () => {
       setState((prev) => ({
         ...prev,
+        schemaError: undefined,
         schemaRecordIsLoading: true,
         schemaRecordError: undefined,
       }));
@@ -91,7 +92,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
     }
     const schema: SchemaField[] = [];
     state.schemaRecord.schema.split(",").forEach((field) => {
-      const [type, name] = field.split(" ");
+      const [type, name] = field.trim().split(" ");
       if (isSchemaFieldTypeName(type)) {
         schema.push({ name, type });
       } else {
@@ -100,6 +101,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         setState((prev) => ({ ...prev, schemaError: err }));
       }
     });
+    schema.push({ name: "recipient", type: "address" });
     setState((prev) => ({
       ...prev,
       schema,
@@ -108,8 +110,16 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
 
   function initSchemaEncoder() {
     if (!state.schemaRecord?.schema) return;
-    const schemaEncoder = new SchemaEncoder(state.schemaRecord?.schema);
-    setState((prev) => ({ ...prev, schemaEncoder }));
+    try {
+      const schemaEncoder = new SchemaEncoder(state.schemaRecord?.schema);
+      setState((prev) => ({ ...prev, schemaEncoder }));
+    } catch (err) {
+      console.error(
+        `Unable to create schema encoder for schema: "${state.schemaRecord?.schema}"`
+      );
+      console.error(err);
+      setState((prev) => ({ ...prev, schemaEncoderError: err as Error }));
+    }
   }
 
   function parseCsv(csv: string) {
