@@ -160,7 +160,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
   const debouncedUpdate = useRef(
     debounce((newValue: Descendant[], schemaData: SchemaField[]) => {
       updateCsvContent(serializeToCsv(newValue), schemaData);
-    }, 500)
+    }, 1500)
   ).current;
 
   const handleContentChange = useCallback(
