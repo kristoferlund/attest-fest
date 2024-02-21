@@ -65,7 +65,7 @@ export function Chain() {
             <Listbox.Option
               key={chain.id}
               value={chain.id}
-              className="flex items-center justify-between px-3 py-1 rounded-md cursor-pointer w-44 ui-active:bg-theme3 ui-active:text-theme1 whitespace-nowrap"
+              className="flex items-center justify-between px-3 py-1 rounded-md cursor-pointer w-60 ui-active:bg-theme3 ui-active:text-theme1 whitespace-nowrap"
             >
               {chain.name}
               <FontAwesomeIcon

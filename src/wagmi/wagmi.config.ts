@@ -1,12 +1,19 @@
-import { configureChains, createConfig, mainnet } from "wagmi";
+import { configureChains, createConfig, mainnet, sepolia } from "wagmi";
 
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { alchemyProvider } from "wagmi/providers/alchemy";
-import { optimism } from "wagmi/chains";
+import { base, baseSepolia, optimism, optimismSepolia } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
-export const supportedChains = [mainnet, optimism];
+export const supportedChains = [
+  mainnet,
+  optimism,
+  base,
+  sepolia,
+  optimismSepolia,
+  baseSepolia,
+];
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   supportedChains,

@@ -13,9 +13,33 @@ export const easConfig: EasConfig[] = [
     explorerUrl: "https://easscan.org",
   },
   {
+    id: 11155111, // Ethereum Sepolia
+    address: "0xC2679fBD37d54388Ce493F1DB75320D236e1815e",
+    registryAddress: "0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0",
+    explorerUrl: "https://sepolia.easscan.org",
+  },
+  {
+    id: 8453, // Base Mainnet
+    address: "0x4200000000000000000000000000000000000021",
+    registryAddress: "0x4200000000000000000000000000000000000020",
+    explorerUrl: "https://base.easscan.org",
+  },
+  {
+    id: 84532, // Base Sepolia
+    address: "0x4200000000000000000000000000000000000021",
+    registryAddress: "0x4200000000000000000000000000000000000020",
+    explorerUrl: "https://base-sepolia.easscan.org",
+  },
+  {
     id: 10, // Optimism
     address: "0x4200000000000000000000000000000000000021",
     registryAddress: "0x4200000000000000000000000000000000000020",
     explorerUrl: "https://optimism.easscan.org",
+  },
+  {
+    id: 11155420, // Optimism Sepolia
+    address: "0x4200000000000000000000000000000000000021",
+    registryAddress: "0x4200000000000000000000000000000000000020",
+    explorerUrl: "https://optimism-sepolia.easscan.org",
   },
 ];

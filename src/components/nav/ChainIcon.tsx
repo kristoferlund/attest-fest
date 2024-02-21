@@ -1,9 +1,14 @@
+import Base from "./images/base.png";
 import Ethereum from "./images/ethereum.png";
 import Optimism from "./images/optimism.png";
 
 const CHAIN_IMAGES: { [key: string]: string } = {
+  Base,
+  "Base Sepolia": Base,
   Ethereum,
+  "Ethereum Sepolia": Ethereum,
   "OP Mainnet": Optimism,
+  "Optimism Sepolia": Optimism,
 };
 
 export function ChainIcon({
