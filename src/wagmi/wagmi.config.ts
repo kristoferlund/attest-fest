@@ -23,7 +23,7 @@ export const wagmiConfig = createConfig({
     new WalletConnectConnector({
       chains,
       options: {
-        projectId: "880b1fa160b6bcbe83f57971d986c51d",
+        projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
       },
     }),
   ],
