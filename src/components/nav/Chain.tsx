@@ -65,13 +65,16 @@ export function Chain() {
             <Listbox.Option
               key={chain.id}
               value={chain.id}
-              className="flex items-center justify-between px-3 py-1 rounded-md cursor-pointer w-44 ui-active:bg-theme3 ui-active:text-theme1 whitespace-nowrap"
+              className="flex items-center justify-between w-56 px-3 py-1 rounded-md cursor-pointer ui-active:bg-theme3 ui-active:text-theme1 whitespace-nowrap"
             >
-              {chain.name}
-              <FontAwesomeIcon
-                icon={faCheck}
-                className="hidden ui-selected:inline-block"
-              />
+              <ChainIcon chainName={chain.name} className="h-4" />
+              <div>
+                {chain.name}
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="hidden ml-2 ui-selected:inline-block"
+                />
+              </div>
             </Listbox.Option>
           ))}
         </Listbox.Options>
