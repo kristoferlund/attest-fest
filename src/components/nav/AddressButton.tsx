@@ -1,13 +1,13 @@
 import { useAccount, useEnsName } from "wagmi";
 
 import { AccountDialog } from "../AccountDialog";
+import { ConnectButton } from "./ConnectButton";
 import { shortenEthAddress } from "../../eth/util/shortenEthAddress";
 import { useState } from "react";
-import { ConnectButton } from "./ConnectButton";
 
 export function AddressButton() {
   const { address, isConnected } = useAccount();
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: 1 });
   const [isOpen, setIsOpen] = useState(false);
 
   if (!isConnected) {
