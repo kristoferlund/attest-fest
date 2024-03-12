@@ -3,6 +3,7 @@ import {
   faCircleNotch,
   faWaveSquare,
 } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ChainIcon } from "./ChainIcon";
@@ -11,12 +12,27 @@ import { Listbox } from "@headlessui/react";
 import { isChainIdSupported } from "../../wagmi/isChainIdSupported";
 import { supportedChains } from "../../wagmi/wagmi.config";
 import toast from "react-hot-toast";
-import { useEffect } from "react";
 import { useStateStore } from "../../zustand/hooks/useStateStore";
+
+const DEV_CHAINS = [
+  "Sepolia",
+  "Optimism Sepolia",
+  "Scroll Sepolia",
+  "Polygon Mumbai",
+];
 
 export function Chain() {
   const { chain } = useNetwork();
   const { error, isLoading, switchNetwork } = useSwitchNetwork();
+  const [activeChain, setActiveChain] = useState<number>();
+
+  // Reload on chain switch, not super elegant but it works to prevent an ETH revert error.
+  useEffect(() => {
+    if (activeChain && activeChain !== chain?.id) {
+      window.location.reload();
+    }
+    setActiveChain(chain?.id);
+  }, [activeChain, chain]);
 
   // Clear selected safe on chain switch
   function clearSelectedSafe() {
@@ -65,10 +81,12 @@ export function Chain() {
             <Listbox.Option
               key={chain.id}
               value={chain.id}
-              className="flex items-center justify-between w-56 px-3 py-1 rounded-md cursor-pointer ui-active:bg-theme3 ui-active:text-theme1 whitespace-nowrap"
+              className="flex items-center justify-between w-64 px-3 py-1 rounded-md cursor-pointer ui-active:bg-theme3 ui-active:text-theme1 whitespace-nowrap"
             >
               <ChainIcon chainName={chain.name} className="h-4" />
-              <div>
+              <div
+                className={DEV_CHAINS.includes(chain.name) ? "opacity-50" : ""}
+              >
                 {chain.name}
                 <FontAwesomeIcon
                   icon={faCheck}

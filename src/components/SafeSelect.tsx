@@ -3,8 +3,8 @@ import { faCheck, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox } from "@headlessui/react";
 import { shortenEthAddress } from "../eth/util/shortenEthAddress";
-import { useSafe } from "../safe/hooks/useSafe";
 import { useAccount } from "wagmi";
+import { useSafe } from "../safe/hooks/useSafe";
 
 type WalletSelectProps = {
   onChange: (address: string) => void;
@@ -17,10 +17,6 @@ export function WalletSelect({
 }: WalletSelectProps) {
   const { safes } = useSafe();
   const { address } = useAccount();
-
-  if (!safes) {
-    return null;
-  }
 
   return (
     <div className="relative">
@@ -57,21 +53,22 @@ export function WalletSelect({
             <div className="inline-block w-4 ui-selected:hidden" />
           </Listbox.Option>
           <div className="border-b-2 border-theme4" />
-          {safes.map((safe) => (
-            <Listbox.Option
-              key={safe}
-              value={safe}
-              className="flex items-center justify-between px-3 py-1 m-2 rounded-md cursor-pointer w-60 ui-active:bg-theme3 ui-active:text-theme1 whitespace-nowrap"
-            >
-              <img src="/safe.png" className="h-4 mr-1" alt="Ethereum" />
-              {shortenEthAddress(safe)}
-              <FontAwesomeIcon
-                icon={faCheck}
-                className="hidden w-4 ui-selected:inline-block"
-              />
-              <div className="inline-block w-4 ui-selected:hidden" />
-            </Listbox.Option>
-          ))}
+          {safes &&
+            safes.map((safe) => (
+              <Listbox.Option
+                key={safe}
+                value={safe}
+                className="flex items-center justify-between px-3 py-1 m-2 rounded-md cursor-pointer w-60 ui-active:bg-theme3 ui-active:text-theme1 whitespace-nowrap"
+              >
+                <img src="/safe.png" className="h-4 mr-1" alt="Ethereum" />
+                {shortenEthAddress(safe)}
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="hidden w-4 ui-selected:inline-block"
+                />
+                <div className="inline-block w-4 ui-selected:hidden" />
+              </Listbox.Option>
+            ))}
         </Listbox.Options>
       </Listbox>
     </div>

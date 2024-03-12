@@ -14,7 +14,7 @@ export function AccountDialog({ open, close }: AccountDialogProps) {
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
 
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: 1 });
 
   return (
     <Dialog open={open} onClose={() => close()} className="relative z-50">

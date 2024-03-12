@@ -1,9 +1,14 @@
 import {
   arbitrum,
   base,
+  linea,
   mainnet,
   optimism,
+  optimismSepolia,
   polygon,
+  polygonMumbai,
+  scroll,
+  scrollSepolia,
   sepolia,
 } from "wagmi/chains";
 import { configureChains, createConfig } from "wagmi";
@@ -19,7 +24,12 @@ export const supportedChains = [
   base,
   arbitrum,
   polygon,
+  scroll,
+  linea,
   sepolia,
+  optimismSepolia,
+  polygonMumbai,
+  scrollSepolia,
 ];
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
