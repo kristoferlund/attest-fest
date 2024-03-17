@@ -76,7 +76,7 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
           </Dialog.Title>
 
           {transaction.isSuccess ? (
-            <div className="flex flex-col items-center gap-5">
+            <div className="flex flex-col items-center gap-5 plausible-event-name=attestation-created plausible-event-name=attestation-eoa-created">
               <FontAwesomeIcon icon={faCheckCircle} size="2x" />
               <div className="text-center">
                 Transaction executed, {pluralAttestation} created!
