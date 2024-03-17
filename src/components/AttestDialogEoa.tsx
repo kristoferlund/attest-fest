@@ -17,6 +17,7 @@ import { useNetwork } from "wagmi";
 import { useSafeConfig } from "../safe/hooks/useSafeConfig";
 import { useStateStore } from "../zustand/hooks/useStateStore";
 import { plausible } from "../main";
+import { useEas } from "../eas/hooks/useEas";
 
 type AccountDialogProps = {
   open: boolean;
