@@ -19,8 +19,6 @@ import { useStateStore } from "./zustand/hooks/useStateStore";
 function AppInner() {
   //Hooks
   const { safes, owners, threshold } = useSafe();
-  const s = useSafe();
-  console.log(s);
   const { address, isConnected } = useAccount();
 
   // Global state
