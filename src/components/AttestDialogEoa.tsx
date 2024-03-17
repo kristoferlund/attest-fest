@@ -27,6 +27,7 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
   const { contract, transaction } = useEasMultiAttest();
   const { chain } = useNetwork();
   const config = useSafeConfig(chain?.id);
+  const { schemaUid } = useEas();
 
   //Local state
   const [parsedCsv, setParsedCsv] = useState<string[][]>([[]]);
@@ -58,11 +59,12 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
   }
 
   useEffect(() => {
-    if (transaction.isSuccess) {
-      plausible.trackEvent("attestation-created");
-      plausible.trackEvent("attestation-eoa-created");
+    if (chain && transaction.isSuccess) {
+      plausible.trackEvent("attestation-created", {
+        props: { chain: chain.id, wallet: "eoa", schema: schemaUid },
+      });
     }
-  }, [transaction.isSuccess]);
+  }, [transaction.isSuccess, chain, schemaUid]);
 
   const pluralAttestation =
     parsedCsv.length > 1 ? "attestations" : "attestation";

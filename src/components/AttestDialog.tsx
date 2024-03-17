@@ -29,6 +29,8 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
   const { safeAddress } = useSafe();
   const { chain } = useNetwork();
   const safeConfig = useSafeConfig(chain?.id);
+  const { schemaUid } = useEas();
+
   //Local state
   const [parsedCsv, setParsedCsv] = useState<string[][]>([[]]);
 
@@ -50,14 +52,16 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
 
   useEffect(() => {
     if (
+      chain &&
       safeTransactionState &&
       safeTransactionState.txHash &&
       safeTransactionState.status === "created"
     ) {
-      plausible.trackEvent("attestation-created");
-      plausible.trackEvent("attestation-safe-created");
+      plausible.trackEvent("attestation-created", {
+        props: { chain: chain.id, wallet: "safe", schema: schemaUid },
+      });
     }
-  }, [safeTransactionState]);
+  }, [safeTransactionState, chain, schemaUid]);
 
   const submitButtonVisible =
     typeof safeTransactionState === "undefined" ||
