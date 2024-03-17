@@ -17,6 +17,7 @@ import { useNetwork } from "wagmi";
 import { useSafe } from "../safe/hooks/useSafe";
 import { useSafeConfig } from "../safe/hooks/useSafeConfig";
 import { useStateStore } from "../zustand/hooks/useStateStore";
+import { plausible } from "../main";
 
 type AccountDialogProps = {
   open: boolean;
@@ -46,6 +47,17 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
   }
 
   useEffect(parseCsv, [csv]);
+
+  useEffect(() => {
+    if (
+      safeTransactionState &&
+      safeTransactionState.txHash &&
+      safeTransactionState.status === "created"
+    ) {
+      plausible.trackEvent("attestation-created");
+      plausible.trackEvent("attestation-safe-created");
+    }
+  }, [safeTransactionState]);
 
   const submitButtonVisible =
     typeof safeTransactionState === "undefined" ||
@@ -92,7 +104,7 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
 
           {safeTransactionState?.txHash &&
           safeTransactionState.status === "created" ? (
-            <div className="flex flex-col items-center gap-5 plausible-event-name=attestation-created plausible-event-name=attestation-safe-created">
+            <div className="flex flex-col items-center gap-5">
               <FontAwesomeIcon icon={faCheckCircle} size="2x" />
               <div className="text-center">
                 Transaction proposed and signed!

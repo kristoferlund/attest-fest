@@ -16,6 +16,7 @@ import { useEasMultiAttest } from "../eas/hooks/useEasMultiAttest";
 import { useNetwork } from "wagmi";
 import { useSafeConfig } from "../safe/hooks/useSafeConfig";
 import { useStateStore } from "../zustand/hooks/useStateStore";
+import { plausible } from "../main";
 
 type AccountDialogProps = {
   open: boolean;
@@ -56,6 +57,13 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
     return "Submit";
   }
 
+  useEffect(() => {
+    if (transaction.isSuccess) {
+      plausible.trackEvent("attestation-created");
+      plausible.trackEvent("attestation-eoa-created");
+    }
+  }, [transaction.isSuccess]);
+
   const pluralAttestation =
     parsedCsv.length > 1 ? "attestations" : "attestation";
 
@@ -76,7 +84,7 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
           </Dialog.Title>
 
           {transaction.isSuccess ? (
-            <div className="flex flex-col items-center gap-5 plausible-event-name=attestation-created plausible-event-name=attestation-eoa-created">
+            <div className="flex flex-col items-center gap-5">
               <FontAwesomeIcon icon={faCheckCircle} size="2x" />
               <div className="text-center">
                 Transaction executed, {pluralAttestation} created!
