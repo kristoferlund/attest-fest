@@ -1,10 +1,12 @@
 export default async (req: Request) => {
   const url = "https://stats.fmckl.se/api/event";
 
-  // Check if the request has a body
-  if (!req.body) {
-    // If there's no body, return a 404 response with "Body required."
+  // Attempt to read the request body
+  const requestBody = await req.text();
 
+  // Check if the request has a body
+  if (!requestBody) {
+    // If there's no body, return a 404 response with "Body required."
     return new Response("Body required", {
       status: 404,
     });
@@ -15,15 +17,14 @@ export default async (req: Request) => {
     const response = await fetch(url, {
       method: req.method,
       headers: req.headers,
-      body: req.body,
+      body: requestBody, // Use the read body text
     });
 
-    // Collect response from the target URL
-    const responseBody = await response.text();
-
-    // Return the response from the target URL
-    return new Response(responseBody, {
+    // Return the response from the target URL directly
+    // This approach ensures headers and status are preserved
+    return new Response(response.body, {
       status: response.status,
+      headers: response.headers,
     });
   } catch (error) {
     // Handle any errors that occur during the fetch operation
