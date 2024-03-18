@@ -27,7 +27,7 @@ export default async (req: Request) => {
     });
   } catch (error) {
     // Handle any errors that occur during the fetch operation
-    return new Response("An error occurred while forwarding the request.", {
+    return new Response(error.message, {
       status: 500,
     });
   }
