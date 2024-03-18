@@ -10,7 +10,8 @@ import { wagmiConfig } from "./wagmi/wagmi.config.ts";
 
 export const plausible = Plausible({
   domain: "attest-fest.party",
-  apiHost: "https://stats.fmckl.se",
+  apiHost: "https://attest-fest.party/.netlify/functions",
+  trackLocalhost: true,
 });
 
 plausible.enableAutoPageviews();
