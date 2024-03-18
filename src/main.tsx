@@ -10,7 +10,7 @@ import { wagmiConfig } from "./wagmi/wagmi.config.ts";
 
 export const plausible = Plausible({
   domain: "attest-fest.party",
-  apiHost: "https://attest-fest.party/.netlify/functions",
+  apiHost: "https://attest-fest.party",
   trackLocalhost: true,
 });
 
