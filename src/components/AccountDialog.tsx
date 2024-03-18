@@ -18,13 +18,9 @@ export function AccountDialog({ open, close }: AccountDialogProps) {
 
   return (
     <Dialog open={open} onClose={() => close()} className="relative z-50">
-      {/* The backdrop, rendered as a fixed sibling to the panel container */}
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-
-      {/* Full-screen container to center the panel */}
       <div className="fixed inset-0 flex items-center justify-center">
-        {/* The actual dialog panel  */}
-        <Dialog.Panel className="flex flex-col gap-3 p-5 mx-auto border bg-theme1 w-80 rounded-xl theme-shadow">
+        <Dialog.Panel className="flex flex-col gap-3 p-5 mx-auto border bg-theme1 rounded-xl theme-shadow">
           <Dialog.Title className="flex justify-between">
             Account
             <button onClick={close}>
@@ -33,7 +29,7 @@ export function AccountDialog({ open, close }: AccountDialogProps) {
           </Dialog.Title>
 
           <div
-            className="flex justify-between p-5 border hover:bg-theme2"
+            className="flex gap-5 p-5 border hover:bg-theme2"
             onClick={() => {
               close();
               disconnect();
