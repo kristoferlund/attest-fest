@@ -1,4 +1,6 @@
 import {
+  AttestationRequestData,
+  MultiAttestationRequest,
   SchemaEncoder,
   SchemaItem,
   SchemaValue,
@@ -109,4 +111,41 @@ export function encodeCsv(
   }
 
   return data;
+}
+
+export function createMultiAttestRequest(
+  csv: string,
+  schemaUid: string,
+  schemaFields: SchemaField[],
+  schemaEncoder: SchemaEncoder
+): MultiAttestationRequest {
+  const parsedCsv: string[][] = parse(csv, {
+    relax_column_count: true,
+    relax_quotes: true,
+    trim: true,
+  });
+
+  const data: AttestationRequestData[] = [];
+  for (const row of parsedCsv) {
+    if (!shouldIncludeRow(row, schemaFields)) {
+      continue;
+    }
+
+    const encodedData = encodeRow(row, schemaFields, schemaEncoder);
+
+    data.push({
+      recipient: row[row.length - 1],
+      expirationTime: 0n, // placeholder value
+      revocable: false,
+      refUID:
+        "0x0000000000000000000000000000000000000000000000000000000000000000", // placeholder value
+      data: encodedData,
+      value: 0n, // placeholder value
+    });
+  }
+
+  return {
+    schema: schemaUid,
+    data,
+  };
 }

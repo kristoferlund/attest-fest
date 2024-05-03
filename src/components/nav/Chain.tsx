@@ -3,14 +3,13 @@ import {
   faCircleNotch,
   faWaveSquare,
 } from "@fortawesome/free-solid-svg-icons";
+import { useAccount, useSwitchChain } from "wagmi";
 import { useEffect, useState } from "react";
-import { useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ChainIcon } from "./ChainIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox } from "@headlessui/react";
 import { isChainIdSupported } from "../../wagmi/isChainIdSupported";
-import { supportedChains } from "../../wagmi/wagmi.config";
 import toast from "react-hot-toast";
 import { useStateStore } from "../../zustand/hooks/useStateStore";
 
@@ -22,8 +21,9 @@ const DEV_CHAINS = [
 ];
 
 export function Chain() {
-  const { chain } = useNetwork();
-  const { error, isLoading, switchNetwork } = useSwitchNetwork();
+  const { chain } = useAccount();
+
+  const { chains, switchChain, isPending, error } = useSwitchChain();
   const [activeChain, setActiveChain] = useState<number>();
 
   // Reload on chain switch, not super elegant but it works to prevent an ETH revert error.
@@ -36,10 +36,10 @@ export function Chain() {
 
   // Clear selected safe on chain switch
   function clearSelectedSafe() {
-    if (!isLoading) return;
+    if (!isPending) return;
     useStateStore.setState({ selectedWalletAddress: "" });
   }
-  useEffect(clearSelectedSafe, [isLoading]);
+  useEffect(clearSelectedSafe, [isPending]);
 
   useEffect(() => {
     if (error) {
@@ -51,7 +51,7 @@ export function Chain() {
     return null;
   }
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="px-5 py-3 border rounded-full">
         <FontAwesomeIcon icon={faCircleNotch} spin size="2x" />
@@ -63,7 +63,10 @@ export function Chain() {
 
   return (
     <div className="relative">
-      <Listbox value={chain.id} onChange={(c) => switchNetwork?.(c)}>
+      <Listbox
+        value={chain.id}
+        onChange={(chainId) => switchChain({ chainId })}
+      >
         <Listbox.Button
           className={`w-full px-5 py-3 border cursor-pointer rounded-xl hover:bg-theme2 md:inline-block ${bg}`}
         >
@@ -77,7 +80,7 @@ export function Chain() {
           )}
         </Listbox.Button>
         <Listbox.Options className="absolute left-0 p-2 border top-14 rounded-xl bg-theme2">
-          {supportedChains.map((chain) => (
+          {chains.map((chain) => (
             <Listbox.Option
               key={chain.id}
               value={chain.id}

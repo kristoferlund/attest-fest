@@ -1,5 +1,4 @@
-import { useAccount, useNetwork } from "wagmi";
-
+import { useAccount } from "wagmi";
 import { Background } from "./components/bg/Background";
 import { CsvEditView } from "./views/CsvEditView";
 import { EasContextProvider } from "./eas/components/EasContextProvider";
@@ -144,16 +143,14 @@ function AppInner() {
 }
 
 function App() {
-  const { chain } = useNetwork();
+  const { chainId } = useAccount();
 
   // Global state
   const selectedWalletAddress = useStateStore(
     (state) => state.selectedWalletAddress
   );
 
-  const isConnnectedToSupportedChain = easConfig.some(
-    (c) => c.id === chain?.id
-  );
+  const isConnnectedToSupportedChain = easConfig.some((c) => c.id === chainId);
 
   const renderNotConnectedToWallet = () => (
     <div className="p-5 text-center">Connect a wallet to start attesting!</div>
@@ -219,11 +216,11 @@ function App() {
           <div>It's an attest fest, yaay!</div>
         </div>
         <div className="flex flex-col items-center justify-center gap-10 p-10 w-full md:w-[768px] border rounded-xl bg-theme1 theme-shadow">
-          {!chain?.id && renderNotConnectedToWallet()}
-          {chain?.id &&
+          {!chainId && renderNotConnectedToWallet()}
+          {chainId &&
             !isConnnectedToSupportedChain &&
             renderNotSupportedNetwork()}
-          {chain?.id && isConnnectedToSupportedChain && renderAppInner()}
+          {chainId && isConnnectedToSupportedChain && renderAppInner()}
         </div>
         <a href="https://github.com/kristoferlund/attest-fest" target="_blank">
           <img src="/github.png" className="h-10" />

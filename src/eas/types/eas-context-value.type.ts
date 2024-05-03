@@ -1,7 +1,7 @@
 import {
-  EAS,
   SchemaEncoder,
   SchemaRecord,
+  Transaction,
 } from "@ethereum-attestation-service/eas-sdk";
 
 import { SafeSignature } from "@safe-global/safe-core-sdk-types";
@@ -20,9 +20,16 @@ export type SafeTransactionState = {
   error?: Error;
 };
 
+export type transactionStatus =
+  | "creating"
+  | "attesting"
+  | "wait_uid"
+  | "success"
+  | "error";
+
 export type EasContext = {
   schemaUid: string;
-  eas?: EAS;
+  // eas?: EAS;
   schemaEncoder?: SchemaEncoder;
   schemaEncoderError?: Error;
   schemaRecordIsLoading?: boolean;
@@ -32,5 +39,12 @@ export type EasContext = {
   schemaError?: Error;
 
   safeTransactionState?: SafeTransactionState;
-  createSafeAttestationsTransaction?: (csv: string) => Promise<void>;
+
+  transactionStatus?: transactionStatus;
+  transaction?: Transaction<string[]>;
+  attestationUids?: string[];
+  transactionError?: unknown;
+
+  createSafeAttestationsTransaction?: () => Promise<void>;
+  createAttestations?: () => Promise<void>;
 };

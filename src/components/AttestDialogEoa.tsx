@@ -3,6 +3,7 @@ import {
   faCircleNotch,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { useAccount } from "wagmi";
 import { useEffect, useState } from "react";
 
 import { BaseError } from "viem";
@@ -11,13 +12,11 @@ import { CopyButton } from "./bg/images/CopyButton";
 import { Dialog } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { parse } from "csv-parse/sync";
+import { plausible } from "../main";
 import { shortenEthAddress } from "../eth/util/shortenEthAddress";
-import { useEasMultiAttest } from "../eas/hooks/useEasMultiAttest";
-import { useNetwork } from "wagmi";
+import { useEas } from "../eas/hooks/useEas";
 import { useSafeConfig } from "../safe/hooks/useSafeConfig";
 import { useStateStore } from "../zustand/hooks/useStateStore";
-import { plausible } from "../main";
-import { useEas } from "../eas/hooks/useEas";
 
 type AccountDialogProps = {
   open: boolean;
@@ -25,10 +24,15 @@ type AccountDialogProps = {
 };
 
 export function AttestDialogEoa({ open, close }: AccountDialogProps) {
-  const { contract, transaction } = useEasMultiAttest();
-  const { chain } = useNetwork();
-  const config = useSafeConfig(chain?.id);
-  const { schemaUid } = useEas();
+  const { chainId } = useAccount();
+  const config = useSafeConfig(chainId);
+  const {
+    createAttestations,
+    transactionStatus,
+    transaction,
+    transactionError,
+    schemaUid,
+  } = useEas();
 
   //Local state
   const [parsedCsv, setParsedCsv] = useState<string[][]>([[]]);
@@ -46,29 +50,35 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
       })
     );
   }
-
   useEffect(parseCsv, [csv]);
 
   function submitButtonText() {
-    if (contract.isLoading) {
+    if (transactionStatus === "creating" || transactionStatus === "attesting") {
       return "Submitting";
     }
-    if (transaction.isFetching) {
-      return "Executing";
+    if (transactionStatus === "wait_uid") {
+      return "Waiting to be minted";
     }
     return "Submit";
   }
 
   useEffect(() => {
-    if (chain && transaction.isSuccess) {
+    if (transactionStatus === "success" && chainId) {
       plausible.trackEvent("attestation-created", {
-        props: { chain: chain.id, wallet: "eoa", schema: schemaUid },
+        props: { chain: chainId, wallet: "eoa", schema: schemaUid },
       });
     }
-  }, [transaction.isSuccess, chain, schemaUid]);
+  }, [transactionStatus, schemaUid, chainId]);
 
   const pluralAttestation =
     parsedCsv.length > 1 ? "attestations" : "attestation";
+
+  const inProgress =
+    transactionStatus === "creating" ||
+    transactionStatus === "attesting" ||
+    transactionStatus === "wait_uid";
+
+  const buttonDisabled = !parsedCsv.length || inProgress;
 
   return (
     <Dialog open={open} onClose={() => close()} className="relative z-50">
@@ -86,7 +96,7 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
             </button>
           </Dialog.Title>
 
-          {transaction.isSuccess ? (
+          {transactionStatus === "success" ? (
             <div className="flex flex-col items-center gap-5">
               <FontAwesomeIcon icon={faCheckCircle} size="2x" />
               <div className="text-center">
@@ -94,14 +104,14 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
               </div>
               <div>
                 <a
-                  href={`${config?.explorerUrl}/tx/${contract.data?.hash}`}
+                  href={`${config?.explorerUrl}/tx/${transaction?.tx.hash}`}
                   target="_blank"
                   rel="noreferrer"
                   className="mx-1"
                 >
-                  {shortenEthAddress(contract.data?.hash || "")}
+                  {shortenEthAddress(transaction?.tx.hash || "")}
                 </a>
-                <CopyButton textToCopy={`${contract.data?.hash}` || ""} />
+                <CopyButton textToCopy={`${transaction?.tx.hash}` || ""} />
               </div>
 
               <Button onClick={close}>Close</Button>
@@ -113,11 +123,11 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
                 <strong>{parsedCsv.length}</strong> {pluralAttestation}.
               </div>
 
-              {contract.isError && (
+              {transactionStatus === "error" && (
                 <div className="px-10 leading-loose text-center text-red-500">
-                  {contract.error instanceof BaseError
-                    ? contract.error?.shortMessage
-                    : contract.error?.message}
+                  {transactionError instanceof BaseError
+                    ? transactionError.shortMessage
+                    : (transactionError as Error)?.message}
                 </div>
               )}
 
@@ -126,11 +136,11 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
 
                 <Button
                   onClick={() => {
-                    contract.write?.();
+                    createAttestations && createAttestations();
                   }}
-                  disabled={contract.isLoading || transaction.isFetching}
+                  disabled={buttonDisabled}
                 >
-                  {(contract.isLoading || transaction.isFetching) && (
+                  {inProgress && (
                     <FontAwesomeIcon
                       icon={faCircleNotch}
                       className="w-4 h-4 mr-2"
