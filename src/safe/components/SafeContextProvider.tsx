@@ -1,12 +1,12 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import Safe, { EthersAdapter } from "@safe-global/protocol-kit";
-import { useAccount, useNetwork } from "wagmi";
 
 import SafeApiKit from "@safe-global/api-kit";
 import { SafeContext } from "../types/use-safe-return";
 import { ethers } from "ethers";
+import { useAccount } from "wagmi";
+import { useEthersSigner } from "../../ethers/hooks/useEthersSigner";
 import { useSafeConfig } from "../hooks/useSafeConfig";
-import { useSigner } from "../../wagmi/hooks/useSigner";
 
 export const ReactSafeContext = React.createContext<SafeContext | undefined>(
   undefined
@@ -27,8 +27,8 @@ export const SafeContextProvider: React.FC<SafeProviderProps> = ({
   address,
   children,
 }: SafeProviderProps) => {
-  const { chain } = useNetwork();
-  const rpcSigner = useSigner();
+  const { chain } = useAccount();
+  const rpcSigner = useEthersSigner({ chainId: chain?.id });
   const { address: userAddress } = useAccount();
   const safeConfig = useSafeConfig(chain?.id);
 
@@ -65,11 +65,8 @@ export const SafeContextProvider: React.FC<SafeProviderProps> = ({
 
   function initializeSafeApiKit(): void {
     try {
-      if (!state.ethersAdapter || !safeConfig) return;
-      const apiKit = new SafeApiKit({
-        txServiceUrl: safeConfig.serviceUrl,
-        ethAdapter: state.ethersAdapter,
-      });
+      if (!state.ethersAdapter || !safeConfig || !chain?.id) return;
+      const apiKit = new SafeApiKit({ chainId: BigInt(chain.id) });
       setState((prev) => ({
         ...prev,
         safeApiKit: apiKit,

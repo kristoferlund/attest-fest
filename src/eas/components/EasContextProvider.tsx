@@ -9,16 +9,22 @@ import {
   SafeTransactionDataPartial,
 } from "@safe-global/safe-core-sdk-types";
 import React, { ReactNode, useEffect, useState } from "react";
-import { encodeRow, shouldIncludeRow } from "../utils/encodeCsv";
-import { useProvider, useSigner } from "../../wagmi/hooks/useSigner";
+import {
+  createMultiAttestRequest,
+  encodeRow,
+  shouldIncludeRow,
+} from "../utils/encodeCsv";
 
 import { EasContext } from "../types/eas-context-value.type";
 import { SchemaField } from "../types/schema-field.type";
 import { isSchemaFieldTypeName } from "../utils/isSchemaFieldTypeName";
 import { parse } from "csv-parse/sync";
+import { useAccount } from "wagmi";
 import { useEasConfig } from "../hooks/useEasConfig";
-import { useNetwork } from "wagmi";
+import { useEthersProvider } from "../../ethers/hooks/useEthersProvider";
+import { useEthersSigner } from "../../ethers/hooks/useEthersSigner";
 import { useSafe } from "../../safe/hooks/useSafe";
+import { useStateStore } from "../../zustand/hooks/useStateStore";
 
 export const ReactEasContext = React.createContext<EasContext | undefined>(
   undefined
@@ -35,18 +41,16 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
 }: EasProviderProps) => {
   // Hooks
   const { safeAddress, safe, safeApiKit, ethersAdapter } = useSafe();
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
   const easConfig = useEasConfig(chain?.id);
-  const rpcProvider = useProvider();
-  const rpcSigner = useSigner();
+  const rpcProvider = useEthersProvider({ chainId: chain?.id });
+  const rpcSigner = useEthersSigner({ chainId: chain?.id });
+
+  // Global state
+  const csv = useStateStore((state) => state.csv);
 
   // Local state
   const [state, setState] = useState<EasContext>({ schemaUid });
-
-  function initEas() {
-    if (!easConfig?.address) return;
-    setState((previous) => ({ ...previous, eas: new EAS(easConfig.address) }));
-  }
 
   function loadSchemaRecord() {
     if (!easConfig || !rpcProvider || !schemaUid) {
@@ -130,9 +134,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
     });
   }
 
-  const createSafeAttestationsTransaction = async (
-    csv: string
-  ): Promise<void> => {
+  const createSafeAttestationsTransaction = async (): Promise<void> => {
     try {
       if (
         !rpcSigner ||
@@ -140,9 +142,9 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         !safe ||
         !safeApiKit ||
         !ethersAdapter ||
-        !state.eas ||
         !state.schemaEncoder ||
-        !state.schema
+        !state.schema ||
+        !easConfig
       ) {
         throw new Error("Missing signer, safe, safeApiKit or ethersAdapter");
       }
@@ -154,7 +156,10 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         },
       }));
 
-      const safeTransactionData: MetaTransactionData[] = [];
+      const eas = new EAS(easConfig.address);
+      eas.connect(rpcSigner);
+
+      const transactions: MetaTransactionData[] = [];
       const parsedCsv: string[][] = parseCsv(csv);
 
       for (const row of parsedCsv) {
@@ -166,9 +171,9 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
 
         // Create the transaction data
         const txData: SafeTransactionDataPartial = {
-          to: state.eas.contract.address,
+          to: easConfig.address,
           value: "0",
-          data: state.eas.contract.interface.encodeFunctionData("attest", [
+          data: eas.contract.interface.encodeFunctionData("attest", [
             {
               schema: schemaUid,
               data: {
@@ -186,18 +191,18 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         };
 
         // Add the transaction data to the list
-        safeTransactionData.push(txData);
+        transactions.push(txData);
       }
 
-      const safeTransaction = await safe.createTransaction({
-        safeTransactionData,
+      const transaction = await safe.createTransaction({
+        transactions,
         options: {
           nonce: await safeApiKit.getNextNonce(safeAddress),
         },
       });
 
       const signerAddress = await rpcSigner.getAddress();
-      const txHash = await safe.getTransactionHash(safeTransaction);
+      const txHash = await safe.getTransactionHash(transaction);
 
       setState((prev) => ({
         ...prev,
@@ -207,12 +212,17 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         },
       }));
 
-      const signature = await safe.signTransactionHash(txHash);
+      const signedTransaction = await safe.signTransaction(transaction);
+
+      const signature = signedTransaction.getSignature(signerAddress);
+      if (!signature) {
+        throw new Error("Signing transaction failed");
+      }
 
       // Propose transaction to the service
       await safeApiKit.proposeTransaction({
         safeAddress,
-        safeTransactionData: safeTransaction.data,
+        safeTransactionData: transaction.data,
         safeTxHash: txHash,
         senderAddress: signerAddress,
         senderSignature: signature.data,
@@ -221,7 +231,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
       console.log("Proposed a transaction with Safe:", safeAddress);
       console.log("- Transaction hash:", txHash);
       console.log("- Signer address:", signerAddress);
-      console.log("- Signature:", signature.data);
+      console.log("- Signature:", transaction.data);
 
       setState((prev) => ({
         ...prev,
@@ -243,14 +253,77 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
     }
   };
 
-  useEffect(initEas, [easConfig?.address]);
+  const createAttestations = async (): Promise<void> => {
+    try {
+      if (!state.schemaEncoder || !state.schema || !easConfig || !rpcSigner) {
+        throw new Error(
+          "Missing schemaEncoder, schema, easConfig or rpcSigner"
+        );
+      }
+
+      setState((prev) => ({
+        ...prev,
+        transactionStatus: "creating",
+      }));
+
+      const request = createMultiAttestRequest(
+        csv,
+        state.schemaUid,
+        state.schema,
+        state.schemaEncoder
+      );
+
+      const eas = new EAS(easConfig.address);
+      eas.connect(rpcSigner);
+
+      console.log("EAS initialized");
+      console.log("Creating attestations", request);
+
+      setState((prev) => ({
+        ...prev,
+        transactionStatus: "attesting",
+      }));
+
+      const transaction = await eas.multiAttest([request]);
+
+      console.log("Attestation transaction created", transaction);
+      console.log("Waiting for transaction to be mined");
+
+      setState((prev) => ({
+        ...prev,
+        transactionStatus: "wait_uid",
+        transaction,
+      }));
+
+      const uid = await transaction.wait();
+
+      console.log("Transaction mined.");
+      console.log("Attestation UIDs", uid);
+
+      setState((prev) => ({
+        ...prev,
+        transactionStatus: "success",
+        attestationUids: uid,
+      }));
+    } catch (e) {
+      setState((prev) => ({
+        ...prev,
+        transactionStatus: "error",
+        transactionError: e,
+      }));
+      console.error("Error creating transaction", e);
+    }
+  };
+
+  // useEffect(initEas, [easConfig?.address]);
   useEffect(loadSchemaRecord, [easConfig, rpcProvider, schemaUid]);
   useEffect(createSchemaFromRecord, [state.schemaRecord]);
   useEffect(initSchemaEncoder, [state.schemaRecord?.schema]);
 
-  const context = {
+  const context: EasContext = {
     ...state,
     createSafeAttestationsTransaction,
+    createAttestations,
   };
 
   return (

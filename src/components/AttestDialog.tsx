@@ -3,6 +3,7 @@ import {
   faCircleNotch,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { useAccount } from "wagmi";
 import { useEffect, useState } from "react";
 
 import { AttestDialogExecute } from "./AttestDialogExecute";
@@ -11,13 +12,12 @@ import { CopyButton } from "./bg/images/CopyButton";
 import { Dialog } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { parse } from "csv-parse/sync";
+import { plausible } from "../main";
 import { shortenEthAddress } from "../eth/util/shortenEthAddress";
 import { useEas } from "../eas/hooks/useEas";
-import { useNetwork } from "wagmi";
 import { useSafe } from "../safe/hooks/useSafe";
 import { useSafeConfig } from "../safe/hooks/useSafeConfig";
 import { useStateStore } from "../zustand/hooks/useStateStore";
-import { plausible } from "../main";
 
 type AccountDialogProps = {
   open: boolean;
@@ -27,9 +27,9 @@ type AccountDialogProps = {
 export function AttestDialog({ open, close }: AccountDialogProps) {
   const { createSafeAttestationsTransaction, safeTransactionState } = useEas();
   const { safeAddress } = useSafe();
-  const { chain } = useNetwork();
-  const safeConfig = useSafeConfig(chain?.id);
   const { schemaUid } = useEas();
+  const { chainId } = useAccount();
+  const safeConfig = useSafeConfig(chainId);
 
   //Local state
   const [parsedCsv, setParsedCsv] = useState<string[][]>([[]]);
@@ -52,16 +52,16 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
 
   useEffect(() => {
     if (
-      chain &&
+      chainId &&
       safeTransactionState &&
       safeTransactionState.txHash &&
       safeTransactionState.status === "created"
     ) {
       plausible.trackEvent("attestation-created", {
-        props: { chain: chain.id, wallet: "safe", schema: schemaUid },
+        props: { chain: chainId, wallet: "safe", schema: schemaUid },
       });
     }
-  }, [safeTransactionState, chain, schemaUid]);
+  }, [safeTransactionState, chainId, schemaUid]);
 
   const submitButtonVisible =
     typeof safeTransactionState === "undefined" ||
@@ -153,7 +153,7 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
                   <Button
                     onClick={() => {
                       createSafeAttestationsTransaction &&
-                        createSafeAttestationsTransaction(csv);
+                        createSafeAttestationsTransaction();
                     }}
                     disabled={submitButtonDisabled}
                   >

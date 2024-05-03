@@ -5,11 +5,11 @@ import {
 
 import { Button } from "./ui/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSafeTransaction } from "../safe/hooks/useSafeTransaction";
-import { useNetwork } from "wagmi";
-import { useSafeConfig } from "../safe/hooks/useSafeConfig";
+import { useAccount } from "wagmi";
 import { useEas } from "../eas/hooks/useEas";
 import { useEasConfig } from "../eas/hooks/useEasConfig";
+import { useSafeConfig } from "../safe/hooks/useSafeConfig";
+import { useSafeTransaction } from "../safe/hooks/useSafeTransaction";
 
 type AttestDialogExecuteProps = {
   safeTxHash?: string;
@@ -20,7 +20,7 @@ export function AttestDialogExecute({
   safeTxHash,
   onClose,
 }: AttestDialogExecuteProps) {
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
   const safeConfig = useSafeConfig(chain?.id);
   const { schemaUid } = useEas();
   const easConfig = useEasConfig(chain?.id);

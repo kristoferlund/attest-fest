@@ -1,16 +1,13 @@
-// Internal imports
-import { useAccount, useNetwork } from "wagmi";
-// External package imports
 import { useEffect, useState } from "react";
 
 import { ExecuteSafeTransactionStateType } from "../types/execute-safe-transaction-state.type";
 import { SafeMultisigTransactionResponse } from "@safe-global/safe-core-sdk-types";
-import { SignSafeTransactionStateType } from "../types/sign-safe-transaction-state.type";
 import { errorHasMessage } from "../../eth/util/errorHasMessage";
 import { errorHasReason } from "../../eth/util/errorHasReason";
 import { errorMessage } from "../errorCodes";
 import { isExecuteError } from "../util/isExecuteError";
 import { toast } from "react-hot-toast";
+import { useAccount } from "wagmi";
 import { useSafe } from "./useSafe";
 import { useSafeConfig } from "./useSafeConfig";
 
@@ -18,8 +15,6 @@ type UseSafeTransactionReturn = {
   transaction?: SafeMultisigTransactionResponse;
   moreConfirmationsRequired?: boolean;
   mySignatureAwaited?: boolean;
-  signState?: SignSafeTransactionStateType;
-  signTransaction?: () => void;
   executeState?: ExecuteSafeTransactionStateType;
   executeTransaction?: () => void;
   explorerUrl?: string;
@@ -36,16 +31,15 @@ export function useSafeTransaction({
   safeTxHash,
 }: UseSafeTransactionProps): UseSafeTransactionReturn {
   // Hooks
-  const { address: userAddress } = useAccount();
+  const { address: userAddress, chain } = useAccount();
   const { safe, safeApiKit } = useSafe();
-  const { chain } = useNetwork();
   const safeConfig = useSafeConfig(chain?.id);
 
   // Local state
   const [mySignatureAwaited, setMySignatureAwaited] = useState<boolean>();
   const [transaction, setTransaction] =
     useState<SafeMultisigTransactionResponse>();
-  const [signState, setSignState] = useState<SignSafeTransactionStateType>();
+  // const [signState, setSignState] = useState<SignSafeTransactionStateType>();
   const [executeState, setExecuteState] =
     useState<ExecuteSafeTransactionStateType>();
 
@@ -78,27 +72,6 @@ export function useSafeTransaction({
         isOwner &&
           !transaction.confirmations?.find((c) => c.owner === userAddress)
       );
-    })();
-  }
-
-  function signTransaction(): void {
-    if (!safe || !safeTxHash || !safeApiKit) {
-      return;
-    }
-    void (async (): Promise<void> => {
-      setSignState({ state: "signing" });
-      try {
-        const signature = await safe.signTransactionHash(safeTxHash);
-        await safeApiKit.confirmTransaction(safeTxHash, signature.data);
-        setSignState({ state: "signed" });
-      } catch (e) {
-        if (errorHasReason(e) && e.reason) {
-          toast.error(e.reason);
-        } else if (errorHasMessage(e) && e.message) {
-          toast.error(e.message);
-        }
-        setSignState({ state: "error", error: e as Error });
-      }
     })();
   }
 
@@ -201,8 +174,6 @@ export function useSafeTransaction({
     transaction,
     moreConfirmationsRequired,
     mySignatureAwaited,
-    signState,
-    signTransaction,
     executeState,
     executeTransaction,
     explorerUrl,

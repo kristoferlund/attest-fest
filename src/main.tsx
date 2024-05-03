@@ -1,11 +1,13 @@
 import "./index.css";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import App from "./App.tsx";
 import Plausible from "plausible-tracker";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Toaster } from "react-hot-toast";
-import { WagmiConfig } from "wagmi";
+import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "./wagmi/wagmi.config.ts";
 
 export const plausible = Plausible({
@@ -16,11 +18,15 @@ export const plausible = Plausible({
 
 plausible.enableAutoPageviews();
 
+const queryClient = new QueryClient();
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <WagmiConfig config={wagmiConfig}>
-      <Toaster />
-      <App />
-    </WagmiConfig>
+    <QueryClientProvider client={queryClient}>
+      <WagmiProvider config={wagmiConfig}>
+        <Toaster />
+        <App />
+      </WagmiProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
