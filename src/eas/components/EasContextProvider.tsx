@@ -4,7 +4,6 @@ import {
   SchemaRegistry,
 } from "@ethereum-attestation-service/eas-sdk";
 import {
-  MetaTransactionData,
   OperationType,
   SafeTransactionDataPartial,
 } from "@safe-global/safe-core-sdk-types";
@@ -159,7 +158,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
       const eas = new EAS(easConfig.address);
       eas.connect(rpcSigner);
 
-      const transactions: MetaTransactionData[] = [];
+      const requestData = [];
       const parsedCsv: string[][] = parseCsv(csv);
 
       for (const row of parsedCsv) {
@@ -169,33 +168,35 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
 
         const encodedData = encodeRow(row, state.schema, state.schemaEncoder);
 
-        // Create the transaction data
-        const txData: SafeTransactionDataPartial = {
-          to: easConfig.address,
-          value: "0",
-          data: eas.contract.interface.encodeFunctionData("attest", [
-            {
-              schema: schemaUid,
-              data: {
-                recipient: row[row.length - 1], // Last column should contain the recipient address
-                expirationTime: 0,
-                revocable: false,
-                refUID:
-                  "0x0000000000000000000000000000000000000000000000000000000000000000",
-                data: encodedData,
-                value: 0,
-              },
-            },
-          ]),
-          operation: OperationType.Call,
+        const data = {
+          recipient: row[row.length - 1], // Last column should contain the recipient address
+          expirationTime: 0n,
+          revocable: false,
+          refUID:
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+          data: encodedData,
+          value: 0n,
         };
 
-        // Add the transaction data to the list
-        transactions.push(txData);
+        requestData.push(data);
       }
 
+      const txData: SafeTransactionDataPartial = {
+        to: easConfig.address,
+        value: "0",
+        data: eas.contract.interface.encodeFunctionData("multiAttest", [
+          [
+            {
+              schema: schemaUid,
+              data: requestData,
+            },
+          ],
+        ]),
+        operation: OperationType.Call,
+      };
+
       const transaction = await safe.createTransaction({
-        transactions,
+        transactions: [txData],
         options: {
           nonce: await safeApiKit.getNextNonce(safeAddress),
         },
