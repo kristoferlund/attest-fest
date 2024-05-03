@@ -15,14 +15,14 @@ const CHAIN_IMAGES: { [key: string]: string } = {
   Scroll,
   "Linea Mainnet": Linea,
   Sepolia: Ethereum,
-  "Optimism Sepolia": Optimism,
+  "OP Sepolia": Optimism,
   "Polygon Mumbai": Polygon,
   "Scroll Sepolia": Scroll,
 };
 
 const DEV_CHAINS = [
   "Sepolia",
-  "Optimism Sepolia",
+  "OP Sepolia",
   "Scroll Sepolia",
   "Polygon Mumbai",
 ];
