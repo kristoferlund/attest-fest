@@ -87,7 +87,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
 
   // Global state
   const editorErrorMessage = useCsvErrorStateStore(
-    (state) => state.editorErrorMessage
+    (state) => state.editorErrorMessage,
   );
 
   // Slate editor instance
@@ -98,7 +98,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
     const lineCol = slatePointToLineCol(
       editor,
       currentSelection?.anchor.path,
-      currentSelection?.anchor.offset
+      currentSelection?.anchor.offset,
     );
 
     try {
@@ -121,7 +121,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
         ) {
           csvHasErrors = true;
           onCsvError(
-            new Error(`Invalid CSV: Wrong number of columns, row: ${i + 1}`)
+            new Error(`Invalid CSV: Wrong number of columns, row: ${i + 1}`),
           );
         }
         for (let j = 0; j < row.children.length; j++) {
@@ -129,7 +129,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
           if ("error" in cell && cell.error) {
             csvHasErrors = true;
             onCsvError(
-              new Error("CSV contains errors, see error highlighting.")
+              new Error("CSV contains errors, see error highlighting."),
             );
           }
         }
@@ -140,7 +140,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
         const newPoint = lineColToSlatePoint(
           editor,
           lineCol.line,
-          lineCol.column
+          lineCol.column,
         );
         if (newPoint) {
           const newSelection = {
@@ -154,13 +154,14 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
       console.error(error);
       onCsvError(error as Error);
     }
+    onChange(content);
     setIsParsing(false);
   };
 
   const debouncedUpdate = useRef(
     debounce((newValue: Descendant[], schemaData: SchemaField[]) => {
       updateCsvContent(serializeToCsv(newValue), schemaData);
-    }, 1500)
+    }, 1500),
   ).current;
 
   const handleContentChange = useCallback(
@@ -174,7 +175,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
       }
       return newValue;
     },
-    [debouncedUpdate, hasContentChanged, schema, onChange]
+    [debouncedUpdate, hasContentChanged, schema, onChange],
   );
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
@@ -220,6 +221,8 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
 
   if (!schema) return null;
 
+  const placeholderText = schema.map((field) => field.name).join(",");
+
   return (
     <div
       onDragOver={handleDragOver}
@@ -241,7 +244,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
           <FontAwesomeIcon
             icon={faCircleNotch}
             spin
-            className="absolute top-0 right-0 z-10 p-5 bg-opacity-50 rounded-full"
+            className="absolute top-0 right-0 z-10 p-5 bg-opacity-80 rounded-full"
             size="2x"
           />
         )}
@@ -266,6 +269,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
           className="border-2 border-theme4 text-base rounded-xl font-mono bg-theme1 w-full h-[300px] p-5 overflow-auto focus:border-b-2 focus:outline-none caret-theme4 focus:bg-theme2 whitespace-nowrap"
           style={{ whiteSpace: "nowrap" }}
           spellCheck={false}
+          placeholder={placeholderText}
         />
       </Slate>
     </div>

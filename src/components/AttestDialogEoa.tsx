@@ -31,6 +31,7 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
     transactionStatus,
     transaction,
     transactionError,
+    schema,
     schemaUid,
   } = useEas();
 
@@ -42,15 +43,19 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
 
   function parseCsv() {
     if (!csv) return;
-    setParsedCsv(
-      parse(csv.trim(), {
-        relax_column_count: true,
-        relax_quotes: true,
-        trim: true,
-      })
-    );
+    const parsedCsv = parse(csv.trim(), {
+      relax_column_count: true,
+      relax_quotes: true,
+      trim: true,
+    });
+    const headerRow = parsedCsv[0].join(",");
+    const csvHeader = schema?.map((field) => field.name).join(",");
+    if (headerRow === csvHeader) {
+      parsedCsv.shift();
+    }
+    setParsedCsv(parsedCsv);
   }
-  useEffect(parseCsv, [csv]);
+  useEffect(parseCsv, [csv, schema]);
 
   function submitButtonText() {
     if (transactionStatus === "creating" || transactionStatus === "attesting") {

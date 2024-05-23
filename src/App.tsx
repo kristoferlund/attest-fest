@@ -22,7 +22,7 @@ function AppInner() {
 
   // Global state
   const selectedWalletAddress = useStateStore(
-    (state) => state.selectedWalletAddress
+    (state) => state.selectedWalletAddress,
   );
   const schemaUid = useStateStore((state) => state.schemaUid);
 
@@ -30,6 +30,13 @@ function AppInner() {
     useStateStore.setState({
       selectedWalletAddress: selectedAddress,
     });
+
+  // Clear stored csv on app load
+  useEffect(() => {
+    useStateStore.setState({
+      csv: undefined,
+    });
+  }, []);
 
   // Reset selected wallet on address change
   useEffect(() => {
@@ -147,7 +154,7 @@ function App() {
 
   // Global state
   const selectedWalletAddress = useStateStore(
-    (state) => state.selectedWalletAddress
+    (state) => state.selectedWalletAddress,
   );
 
   const isConnnectedToSupportedChain = easConfig.some((c) => c.id === chainId);

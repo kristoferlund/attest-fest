@@ -23,7 +23,7 @@ export function SchemaInput({ onChange, value }: SchemaInputProps) {
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         onClick={handleInputClick}
-        className="w-full p-2 bg-opacity-50 bg-theme2 cursor-text caret-transparent text-ellipsis focus:bg-opacity-100 hover:bg-opacity-100 focus:outline-none "
+        className="w-full p-2 bg-opacity-80 bg-theme2 cursor-text caret-transparent text-ellipsis focus:bg-opacity-100 hover:bg-opacity-100 focus:outline-none "
       />
       {isFocused && !value && (
         <div className="absolute w-[10px] h-[17px] animate-pulse bg-theme4 top-2 left-2"></div>

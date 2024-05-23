@@ -21,7 +21,7 @@ export function WalletSelect({
   return (
     <div className="relative">
       <Listbox value={selectedAddress} onChange={onChange}>
-        <Listbox.Button className="w-full p-2 text-left bg-opacity-50 cursor-pointer bg-theme2 hover:bg-opacity-100">
+        <Listbox.Button className="w-full p-2 text-left bg-opacity-80 cursor-pointer bg-theme2 hover:bg-opacity-100">
           <div className="flex items-center w-full">
             {selectedAddress && selectedAddress === address ? (
               <img

@@ -7,7 +7,7 @@ import { validateEditorValue } from "./validateEditorValue";
 
 export function parseCsvAndValidate(
   csvData: string,
-  schema: SchemaField[]
+  schema: SchemaField[],
 ): Descendant[] {
   const resRoot: Descendant[] = [];
 
@@ -19,9 +19,19 @@ export function parseCsvAndValidate(
     trim: true,
   });
 
+  const csvHeader = schema.map((field) => field.name).join(",");
+
   for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
     const row = rows[rowIndex];
     const resRow: (CsvText | CsvComma)[] = [];
+
+    // Skip header row if it matches the schema
+    if (rowIndex === 0) {
+      const headerRow = row.join(",");
+      if (headerRow === csvHeader) {
+        continue;
+      }
+    }
 
     // Skip empty rows
     if (row.length === 1 && (row[0] === "" || row[0] === '""')) {
@@ -34,7 +44,7 @@ export function parseCsvAndValidate(
       if (colIndex < schema.length) {
         const [parsedValue, error] = validateEditorValue(
           col,
-          schema[colIndex].type
+          schema[colIndex].type,
         );
         const text = col.includes(",") ? `"${col}"` : col;
         resRow.push({ type: "value", text, error });

@@ -21,7 +21,7 @@ export function CsvEditView() {
   const csv = useStateStore((state) => state.csv);
   const csvError = useStateStore((state) => state.csvError);
   const selectedWalletAddress = useStateStore(
-    (state) => state.selectedWalletAddress
+    (state) => state.selectedWalletAddress,
   );
 
   function handleEditorChange(csv: string) {
@@ -35,7 +35,6 @@ export function CsvEditView() {
 
   const buttonDisabled =
     submitDisabled ||
-    !editorTouched ||
     !csv ||
     csv.length < 10 ||
     typeof csvError !== "undefined" ||
@@ -45,13 +44,13 @@ export function CsvEditView() {
 
   return (
     <>
+      <SchemaPills />
+
       <p className="leading-loose text-center">
         Paste data or drop a csv file in the form below. In addition to the
         schema fields, you also need to include the recipient field for every
         row.
       </p>
-
-      <SchemaPills />
 
       <CsvEditor
         onChange={handleEditorChange}
