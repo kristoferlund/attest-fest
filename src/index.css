@@ -31,3 +31,8 @@ a {
 .theme-shadow {
   box-shadow: 0px 20px 80px 20px rgb(110 81 154 / 0.3);
 }
+
+span[data-slate-placeholder="true"] {
+  opacity: 0.6 !important;
+  font-style: italic !important;
+}
