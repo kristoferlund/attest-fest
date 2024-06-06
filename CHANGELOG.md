@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2024-06-06
+
+### Added
+
+- Allow ENS names in recipient field
+
+### Fixed
+
+- Validity check of schema UID
+- Better formatting of error messages in attest dialog
+- Reset active transaction each time Submit is clicked
+
 ## [0.4.0] - 2024-05-23
 
 ### Added
