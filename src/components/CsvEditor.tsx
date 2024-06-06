@@ -19,6 +19,7 @@ import debounce from "lodash/debounce";
 import { parseCsvAndValidate } from "../eas/utils/parseCsvAndValidate";
 import { useCsvErrorStateStore } from "../zustand/hooks/useCsvErrorStateStore";
 import { useEas } from "../eas/hooks/useEas";
+import { usePublicClient } from "wagmi";
 
 // Make Slate play nicely with TS
 declare module "slate" {
@@ -84,26 +85,31 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
   const [isParsing, setIsParsing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [hasContentChanged, setContentChanged] = useState(false);
+  const publicClient = usePublicClient({ chainId: 1 });
 
   // Global state
   const editorErrorMessage = useCsvErrorStateStore(
-    (state) => state.editorErrorMessage,
+    (state) => state.editorErrorMessage
   );
 
   // Slate editor instance
   const editor = useMemo(() => withReact(createEditor()), []);
 
-  const updateCsvContent = (content: string, schemaData: SchemaField[]) => {
+  const updateCsvContent = async (
+    content: string,
+    schemaData: SchemaField[]
+  ) => {
+    if (!publicClient) return;
     const currentSelection = editor.selection;
     const lineCol = slatePointToLineCol(
       editor,
       currentSelection?.anchor.path,
-      currentSelection?.anchor.offset,
+      currentSelection?.anchor.offset
     );
 
     try {
       let csvHasErrors = false;
-      const rows = parseCsvAndValidate(content, schemaData);
+      const rows = await parseCsvAndValidate(content, schemaData, publicClient);
       Transforms.delete(editor, {
         at: {
           anchor: Editor.start(editor, []),
@@ -121,7 +127,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
         ) {
           csvHasErrors = true;
           onCsvError(
-            new Error(`Invalid CSV: Wrong number of columns, row: ${i + 1}`),
+            new Error(`Invalid CSV: Wrong number of columns, row: ${i + 1}`)
           );
         }
         for (let j = 0; j < row.children.length; j++) {
@@ -129,7 +135,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
           if ("error" in cell && cell.error) {
             csvHasErrors = true;
             onCsvError(
-              new Error("CSV contains errors, see error highlighting."),
+              new Error("CSV contains errors, see error highlighting.")
             );
           }
         }
@@ -140,7 +146,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
         const newPoint = lineColToSlatePoint(
           editor,
           lineCol.line,
-          lineCol.column,
+          lineCol.column
         );
         if (newPoint) {
           const newSelection = {
@@ -161,7 +167,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
   const debouncedUpdate = useRef(
     debounce((newValue: Descendant[], schemaData: SchemaField[]) => {
       updateCsvContent(serializeToCsv(newValue), schemaData);
-    }, 1500),
+    }, 1500)
   ).current;
 
   const handleContentChange = useCallback(
@@ -175,7 +181,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
       }
       return newValue;
     },
-    [debouncedUpdate, hasContentChanged, schema, onChange],
+    [debouncedUpdate, hasContentChanged, schema, onChange]
   );
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
@@ -244,7 +250,7 @@ export default function CsvEditor({ onChange, onCsvError }: CsvEditorProps) {
           <FontAwesomeIcon
             icon={faCircleNotch}
             spin
-            className="absolute top-0 right-0 z-10 p-5 bg-opacity-80 rounded-full"
+            className="absolute top-0 right-0 z-10 p-5 rounded-full bg-opacity-80"
             size="2x"
           />
         )}

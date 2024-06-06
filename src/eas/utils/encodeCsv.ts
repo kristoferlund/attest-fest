@@ -5,8 +5,10 @@ import {
   SchemaItem,
   SchemaValue,
 } from "@ethereum-attestation-service/eas-sdk";
+import { PublicClient, isAddress } from "viem";
 
 import { SchemaField } from "../types/schema-field.type";
+import { normalize } from "viem/ens";
 import { parse } from "csv-parse/sync";
 
 export function shouldIncludeRow(row: string[], schema: SchemaField[]) {
@@ -80,45 +82,29 @@ export function encodeRow(
   return schemaEncoder.encodeData(items);
 }
 
-export function encodeCsv(
-  csv: string,
-  schema: SchemaField[],
-  schemaEncoder: SchemaEncoder
-) {
-  const parsedCsv: string[][] = parse(csv, {
-    relax_column_count: true,
-    relax_quotes: true,
-    trim: true,
-  });
-
-  const data = [];
-  for (const row of parsedCsv) {
-    if (!shouldIncludeRow(row, schema)) {
-      continue;
-    }
-
-    const encodedData = encodeRow(row, schema, schemaEncoder);
-
-    data.push({
-      recipient: row[row.length - 1],
-      expirationTime: 0n, // placeholder value
-      revocable: false,
-      refUID:
-        "0x0000000000000000000000000000000000000000000000000000000000000000", // placeholder value
-      data: encodedData,
-      value: 0n, // placeholder value
-    });
+export async function processRecipient(
+  recipient: string,
+  publicClient: PublicClient
+): Promise<string> {
+  if (isAddress(recipient)) {
+    return recipient;
   }
-
-  return data;
+  const address = await publicClient.getEnsAddress({
+    name: normalize(recipient),
+  });
+  if (address) {
+    return address as string;
+  }
+  throw new Error("Invalid recipient");
 }
 
-export function createMultiAttestRequest(
+export async function createMultiAttestRequest(
   csv: string,
   schemaUid: string,
   schemaFields: SchemaField[],
-  schemaEncoder: SchemaEncoder
-): MultiAttestationRequest {
+  schemaEncoder: SchemaEncoder,
+  publicClient: PublicClient
+): Promise<MultiAttestationRequest> {
   const parsedCsv: string[][] = parse(csv, {
     relax_column_count: true,
     relax_quotes: true,
@@ -134,7 +120,7 @@ export function createMultiAttestRequest(
     const encodedData = encodeRow(row, schemaFields, schemaEncoder);
 
     data.push({
-      recipient: row[row.length - 1],
+      recipient: await processRecipient(row[row.length - 1], publicClient),
       expirationTime: 0n, // placeholder value
       revocable: false,
       refUID:

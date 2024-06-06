@@ -47,4 +47,5 @@ export type EasContext = {
 
   createSafeAttestationsTransaction?: () => Promise<void>;
   createAttestations?: () => Promise<void>;
+  resetTransactions?: () => void;
 };

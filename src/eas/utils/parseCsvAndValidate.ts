@@ -1,14 +1,16 @@
 import { CsvComma, CsvText } from "../types/editor-nodes.type";
 
 import { Descendant } from "slate";
+import { PublicClient } from "viem";
 import { SchemaField } from "../types/schema-field.type";
 import { parse } from "csv-parse/sync";
 import { validateEditorValue } from "./validateEditorValue";
 
-export function parseCsvAndValidate(
+export async function parseCsvAndValidate(
   csvData: string,
   schema: SchemaField[],
-): Descendant[] {
+  publicClient: PublicClient
+): Promise<Descendant[]> {
   const resRoot: Descendant[] = [];
 
   if (!csvData) return [{ children: resRoot }];
@@ -42,9 +44,10 @@ export function parseCsvAndValidate(
       const col = row[colIndex];
       colIndex > 0 && resRow.push({ type: "comma", text: "," });
       if (colIndex < schema.length) {
-        const [parsedValue, error] = validateEditorValue(
+        const [parsedValue, error] = await validateEditorValue(
           col,
           schema[colIndex].type,
+          publicClient
         );
         const text = col.includes(",") ? `"${col}"` : col;
         resRow.push({ type: "value", text, error });
