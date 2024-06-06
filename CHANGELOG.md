@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 
+- Correctly handle revocable attestations
 - Validity check of schema UID
 - Better formatting of error messages in attest dialog
 - Reset active transaction each time Submit is clicked

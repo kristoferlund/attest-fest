@@ -103,6 +103,7 @@ export async function createMultiAttestRequest(
   schemaUid: string,
   schemaFields: SchemaField[],
   schemaEncoder: SchemaEncoder,
+  revocable: boolean,
   publicClient: PublicClient
 ): Promise<MultiAttestationRequest> {
   const parsedCsv: string[][] = parse(csv, {
@@ -122,7 +123,7 @@ export async function createMultiAttestRequest(
     data.push({
       recipient: await processRecipient(row[row.length - 1], publicClient),
       expirationTime: 0n, // placeholder value
-      revocable: false,
+      revocable: revocable,
       refUID:
         "0x0000000000000000000000000000000000000000000000000000000000000000", // placeholder value
       data: encodedData,

@@ -148,7 +148,8 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         !state.schema ||
         !easConfig ||
         !publicClient ||
-        !chain?.id
+        !chain?.id ||
+        !state.schemaRecord?.revocable
       ) {
         throw new Error("Missing signer, safe, safeApiKit or ethersAdapter");
       }
@@ -176,7 +177,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         const data = {
           recipient: await processRecipient(row[row.length - 1], publicClient), // Last column should contain the recipient address
           expirationTime: 0n,
-          revocable: false,
+          revocable: state.schemaRecord.revocable,
           refUID:
             "0x0000000000000000000000000000000000000000000000000000000000000000",
           data: encodedData,
@@ -276,7 +277,8 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         !easConfig ||
         !rpcSigner ||
         !publicClient ||
-        !chain?.id
+        !chain?.id ||
+        !state.schemaRecord?.revocable
       ) {
         throw new Error(
           "Missing schemaEncoder, schema, easConfig, rpcSigner or publicClient"
@@ -293,6 +295,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         state.schemaUid,
         state.schema,
         state.schemaEncoder,
+        state.schemaRecord.revocable,
         publicClient
       );
 
