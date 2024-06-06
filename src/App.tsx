@@ -1,4 +1,3 @@
-import { useAccount } from "wagmi";
 import { Background } from "./components/bg/Background";
 import { CsvEditView } from "./views/CsvEditView";
 import { EasContextProvider } from "./eas/components/EasContextProvider";
@@ -11,6 +10,7 @@ import { SchemaInput } from "./components/SchemaInput";
 import { Thumb } from "./components/bg/images/Thumb";
 import { WalletSelect } from "./components/SafeSelect";
 import { easConfig } from "./eas/eas.config";
+import { useAccount } from "wagmi";
 import { useEffect } from "react";
 import { useSafe } from "./safe/hooks/useSafe";
 import { useStateStore } from "./zustand/hooks/useStateStore";
@@ -22,7 +22,7 @@ function AppInner() {
 
   // Global state
   const selectedWalletAddress = useStateStore(
-    (state) => state.selectedWalletAddress,
+    (state) => state.selectedWalletAddress
   );
   const schemaUid = useStateStore((state) => state.schemaUid);
 
@@ -129,9 +129,13 @@ function AppInner() {
               <td className="px-3 border-2 h-14 border-theme4 bg-theme1">
                 <SchemaInput
                   value={schemaUid}
-                  onChange={(schemaUid) =>
-                    useStateStore.setState({ schemaUid })
-                  }
+                  onChange={(schemaUid) => {
+                    if (schemaUid.length === 66 && schemaUid.startsWith("0x")) {
+                      useStateStore.setState({ schemaUid });
+                    } else {
+                      useStateStore.setState({ schemaUid: "" });
+                    }
+                  }}
                 />
               </td>
             </tr>
@@ -154,7 +158,7 @@ function App() {
 
   // Global state
   const selectedWalletAddress = useStateStore(
-    (state) => state.selectedWalletAddress,
+    (state) => state.selectedWalletAddress
   );
 
   const isConnnectedToSupportedChain = easConfig.some((c) => c.id === chainId);
