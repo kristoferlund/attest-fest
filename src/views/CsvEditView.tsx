@@ -9,24 +9,23 @@ import { useState } from "react";
 import { useStateStore } from "../zustand/hooks/useStateStore";
 
 export function CsvEditView() {
-  const { schemaRecord, schemaRecordError, schemaError } = useEas();
+  const { schemaRecord, schemaRecordError, schemaError, resetTransactions } =
+    useEas();
   const { address } = useAccount();
 
   // Local state
   const [attestDialogOpen, setAttestDialogOpen] = useState(false);
-  const [editorTouched, setEditorTouched] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(false);
 
   // Global state
   const csv = useStateStore((state) => state.csv);
   const csvError = useStateStore((state) => state.csvError);
   const selectedWalletAddress = useStateStore(
-    (state) => state.selectedWalletAddress,
+    (state) => state.selectedWalletAddress
   );
 
   function handleEditorChange(csv: string) {
     useStateStore.setState({ csv });
-    setEditorTouched(true);
     setSubmitDisabled(true);
     setTimeout(() => setSubmitDisabled(false), 1500);
   }
@@ -60,7 +59,10 @@ export function CsvEditView() {
       {csvError && <div className="text-red-500">{csvError.message}</div>}
 
       <Button
-        onClick={() => setAttestDialogOpen(true)}
+        onClick={() => {
+          resetTransactions?.();
+          setAttestDialogOpen(true);
+        }}
         disabled={buttonDisabled}
         className="mb-10"
       >
