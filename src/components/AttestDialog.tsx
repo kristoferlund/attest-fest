@@ -12,12 +12,12 @@ import { CopyButton } from "./bg/images/CopyButton";
 import { Dialog } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { parse } from "csv-parse/sync";
-import { plausible } from "../main";
 import { shortenEthAddress } from "../eth/util/shortenEthAddress";
 import { useEas } from "../eas/hooks/useEas";
 import { useSafe } from "../safe/hooks/useSafe";
 import { useSafeConfig } from "../safe/hooks/useSafeConfig";
 import { useStateStore } from "../zustand/hooks/useStateStore";
+import { formatErrorMessage } from "../eth/util/formatErrorMessage";
 
 type AccountDialogProps = {
   open: boolean;
@@ -27,7 +27,6 @@ type AccountDialogProps = {
 export function AttestDialog({ open, close }: AccountDialogProps) {
   const { createSafeAttestationsTransaction, safeTransactionState } = useEas();
   const { safeAddress } = useSafe();
-  const { schemaUid } = useEas();
   const { chainId } = useAccount();
   const safeConfig = useSafeConfig(chainId);
 
@@ -49,19 +48,6 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
   }
 
   useEffect(parseCsv, [csv]);
-
-  useEffect(() => {
-    if (
-      chainId &&
-      safeTransactionState &&
-      safeTransactionState.txHash &&
-      safeTransactionState.status === "created"
-    ) {
-      plausible.trackEvent("attestation-created", {
-        props: { chain: chainId, wallet: "safe", schema: schemaUid },
-      });
-    }
-  }, [safeTransactionState, chainId, schemaUid]);
 
   const submitButtonVisible =
     typeof safeTransactionState === "undefined" ||
@@ -142,6 +128,12 @@ export function AttestDialog({ open, close }: AccountDialogProps) {
                 <strong>{parsedCsv.length}</strong> attestation
                 {parsedCsv.length > 1 && "s"}.
               </div>
+              {safeTransactionState?.status === "error" && (
+                <div className="px-10 leading-loose text-center text-red-500">
+                  {formatErrorMessage(safeTransactionState.error)}
+                </div>
+              )}
+
               <div className="flex flex-col justify-center gap-5 md:flex-row">
                 <Button onClick={close}>
                   {safeTransactionState?.status === "created"

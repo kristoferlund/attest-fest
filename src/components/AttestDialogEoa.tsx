@@ -6,17 +6,16 @@ import {
 import { useAccount } from "wagmi";
 import { useEffect, useState } from "react";
 
-import { BaseError } from "viem";
 import { Button } from "./ui/Button";
 import { CopyButton } from "./bg/images/CopyButton";
 import { Dialog } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { parse } from "csv-parse/sync";
-import { plausible } from "../main";
 import { shortenEthAddress } from "../eth/util/shortenEthAddress";
 import { useEas } from "../eas/hooks/useEas";
 import { useSafeConfig } from "../safe/hooks/useSafeConfig";
 import { useStateStore } from "../zustand/hooks/useStateStore";
+import { formatErrorMessage } from "../eth/util/formatErrorMessage";
 
 type AccountDialogProps = {
   open: boolean;
@@ -32,7 +31,6 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
     transaction,
     transactionError,
     schema,
-    schemaUid,
   } = useEas();
 
   //Local state
@@ -66,14 +64,6 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
     }
     return "Submit";
   }
-
-  useEffect(() => {
-    if (transactionStatus === "success" && chainId) {
-      plausible.trackEvent("attestation-created", {
-        props: { chain: chainId, wallet: "eoa", schema: schemaUid },
-      });
-    }
-  }, [transactionStatus, schemaUid, chainId]);
 
   const pluralAttestation =
     parsedCsv.length > 1 ? "attestations" : "attestation";
@@ -130,9 +120,7 @@ export function AttestDialogEoa({ open, close }: AccountDialogProps) {
 
               {transactionStatus === "error" && (
                 <div className="px-10 leading-loose text-center text-red-500">
-                  {transactionError instanceof BaseError
-                    ? transactionError.shortMessage
-                    : (transactionError as Error)?.message}
+                  {formatErrorMessage(transactionError)}
                 </div>
               )}
 
