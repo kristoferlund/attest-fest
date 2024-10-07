@@ -50,6 +50,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
 
   // Global state
   const csv = useStateStore((state) => state.csv);
+  const includeRefUid = useStateStore((state) => state.includeRefUid);
 
   // Local state
   const [state, setState] = useState<EasContext>({ schemaUid });
@@ -107,6 +108,9 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         setState((prev) => ({ ...prev, schemaError: err }));
       }
     });
+    if (includeRefUid) {
+      schema.push({ name: "refUID", type: "bytes32" });
+    }
     schema.push({ name: "recipient", type: "address" });
     setState((prev) => ({
       ...prev,
@@ -175,10 +179,10 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         const encodedData = encodeRow(row, state.schema, state.schemaEncoder);
 
         const data = {
-          recipient: await processRecipient(row[row.length - 1], publicClient), // Last column should contain the recipient address
+          recipient: await processRecipient(row[row.length - 1], publicClient),
           expirationTime: 0n,
           revocable: state.schemaRecord.revocable,
-          refUID:
+          refUID: includeRefUid ? row[row.length - 2] :
             "0x0000000000000000000000000000000000000000000000000000000000000000",
           data: encodedData,
           value: 0n,
@@ -364,7 +368,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
 
   // useEffect(initEas, [easConfig?.address]);
   useEffect(loadSchemaRecord, [easConfig, rpcProvider, schemaUid]);
-  useEffect(createSchemaFromRecord, [state.schemaRecord]);
+  useEffect(createSchemaFromRecord, [state.schemaRecord, includeRefUid]);
   useEffect(initSchemaEncoder, [state.schemaRecord?.schema]);
 
   const context: EasContext = {

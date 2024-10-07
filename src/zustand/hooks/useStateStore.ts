@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 type GlobalState = {
   selectedWalletAddress: string | undefined;
   schemaUid: string;
+  includeRefUid: boolean;
   csv: string;
   csvError?: Error;
   showTransaction?: boolean;
@@ -15,6 +16,7 @@ export const useStateStore = create(
     () => ({
       selectedWalletAddress: undefined,
       schemaUid: "",
+      includeRefUid: false,
       csv: "",
       showTransaction: false,
     }),

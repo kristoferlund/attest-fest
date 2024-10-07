@@ -23,11 +23,6 @@ export function shouldIncludeRow(row: string[], schema: SchemaField[]) {
     return false;
   }
 
-  // Skip rows with no recipient
-  if (row[row.length - 1] === "") {
-    return false;
-  }
-
   // Check if the row has the correct number of columns
   if (row.length !== schema.length) {
     throw new Error(`Invalid number of columns in row`);
@@ -38,14 +33,19 @@ export function shouldIncludeRow(row: string[], schema: SchemaField[]) {
 
 export function encodeRow(
   row: string[],
-  schema: SchemaField[],
+  schemaFields: SchemaField[],
   schemaEncoder: SchemaEncoder
 ) {
+
   // Encode the data
   const items: SchemaItem[] = [];
-  for (let i = 0; i < schema.length - 1; i++) {
-    // -1 to skip recipient
-    const { name, type } = schema[i];
+
+  // Always skip last column (recipient). If refUID is included, skip that column as well.
+  const isRefUidIncluded = schemaFields[schemaFields.length - 2].name === "refUID";
+  const schemaLength = isRefUidIncluded ? schemaFields.length - 2 : schemaFields.length - 1;
+
+  for (let i = 0; i < schemaLength; i++) {
+    const { name, type } = schemaFields[i];
     let value: SchemaValue;
     if (type.startsWith("uint")) {
       value = BigInt(row[i]);
@@ -112,6 +112,8 @@ export async function createMultiAttestRequest(
     trim: true,
   });
 
+  const isRefUidIncluded = schemaFields[schemaFields.length - 2].name === "refUID";
+
   const data: AttestationRequestData[] = [];
   for (const row of parsedCsv) {
     if (!shouldIncludeRow(row, schemaFields)) {
@@ -124,7 +126,7 @@ export async function createMultiAttestRequest(
       recipient: await processRecipient(row[row.length - 1], publicClient),
       expirationTime: 0n, // placeholder value
       revocable: revocable,
-      refUID:
+      refUID: isRefUidIncluded ? row[row.length - 2] :
         "0x0000000000000000000000000000000000000000000000000000000000000000", // placeholder value
       data: encodedData,
       value: 0n, // placeholder value

@@ -25,6 +25,7 @@ function AppInner() {
     (state) => state.selectedWalletAddress
   );
   const schemaUid = useStateStore((state) => state.schemaUid);
+  const includeRefUid = useStateStore((state) => state.includeRefUid);
 
   const selectWalletAddress = (selectedAddress: string) =>
     useStateStore.setState({
@@ -138,6 +139,15 @@ function AppInner() {
                   }}
                 />
               </td>
+            </tr><tr>
+              <td></td>
+              <td className="px-3 border-2 h-14 border-theme4 bg-theme1" >
+                <div className="flex items-center justify-end w-full px-2 h-14 ">
+                  <input type="checkbox" checked={includeRefUid} onChange={(e) => useStateStore.setState({ includeRefUid: e.target.checked })}
+                    className="focus:outline-none mr-3 accent-theme2 w-5 h-5" />
+                  Include RefUID for individual rows</div>
+              </td>
+
             </tr>
           </tbody>
         </table>
