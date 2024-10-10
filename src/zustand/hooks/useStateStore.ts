@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 type GlobalState = {
   selectedWalletAddress: string | undefined;
@@ -11,17 +10,12 @@ type GlobalState = {
   editorErrorMessage?: string;
 };
 
-export const useStateStore = create(
-  persist<GlobalState>(
-    () => ({
-      selectedWalletAddress: undefined,
-      schemaUid: "",
-      includeRefUid: false,
-      csv: "",
-      showTransaction: false,
-    }),
-    {
-      name: "global-state",
-    }
-  )
+export const useStateStore = create<GlobalState>(
+  () => ({
+    selectedWalletAddress: undefined,
+    schemaUid: "",
+    includeRefUid: false,
+    csv: "",
+    showTransaction: false,
+  }),
 );
