@@ -25,7 +25,6 @@ export function clientToProvider(client?: Client<Transport, Chain>) {
   const options: JsonRpcApiProviderOptions = {
     batchMaxCount: 1,
   };
-  console.log(transport.url, network);
   return new JsonRpcProvider(transport.url, network, options);
 }
 
