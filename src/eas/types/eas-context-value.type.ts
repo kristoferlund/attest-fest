@@ -4,7 +4,7 @@ import {
   Transaction,
 } from "@ethereum-attestation-service/eas-sdk";
 
-import { SafeSignature } from "@safe-global/safe-core-sdk-types";
+import { SafeSignature } from "@safe-global/types-kit";
 import { SchemaField } from "./schema-field.type";
 
 export type SafeTransactionState = {

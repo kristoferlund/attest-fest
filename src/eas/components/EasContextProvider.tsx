@@ -3,10 +3,6 @@ import {
   SchemaEncoder,
   SchemaRegistry,
 } from "@ethereum-attestation-service/eas-sdk";
-import {
-  OperationType,
-  SafeTransactionDataPartial,
-} from "@safe-global/safe-core-sdk-types";
 import React, { ReactNode, useEffect, useState } from "react";
 import {
   createMultiAttestRequest,
@@ -26,9 +22,13 @@ import { useEthersProvider } from "../../ethers/hooks/useEthersProvider";
 import { useEthersSigner } from "../../ethers/hooks/useEthersSigner";
 import { useSafe } from "../../safe/hooks/useSafe";
 import { useStateStore } from "../../zustand/hooks/useStateStore";
+import {
+  OperationType,
+  SafeTransactionDataPartial,
+} from "@safe-global/types-kit";
 
 export const ReactEasContext = React.createContext<EasContext | undefined>(
-  undefined
+  undefined,
 );
 
 type EasProviderProps = {
@@ -41,7 +41,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
   children,
 }: EasProviderProps) => {
   // Hooks
-  const { safeAddress, safe, safeApiKit, ethersAdapter } = useSafe();
+  const { safeAddress, safe, safeApiKit } = useSafe();
   const { chain } = useAccount();
   const easConfig = useEasConfig(chain?.id);
   const rpcProvider = useEthersProvider({ chainId: chain?.id });
@@ -125,7 +125,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
       setState((prev) => ({ ...prev, schemaEncoder }));
     } catch (err) {
       console.error(
-        `Unable to create schema encoder for schema: "${state.schemaRecord?.schema}"`
+        `Unable to create schema encoder for schema: "${state.schemaRecord?.schema}"`,
       );
       console.error(err);
       setState((prev) => ({ ...prev, schemaEncoderError: err as Error }));
@@ -147,7 +147,6 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         !safeAddress ||
         !safe ||
         !safeApiKit ||
-        !ethersAdapter ||
         !state.schemaEncoder ||
         !state.schema ||
         !easConfig ||
@@ -182,8 +181,9 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
           recipient: await processRecipient(row[row.length - 1], publicClient),
           expirationTime: 0n,
           revocable: state.schemaRecord.revocable,
-          refUID: includeRefUid ? row[row.length - 2] :
-            "0x0000000000000000000000000000000000000000000000000000000000000000",
+          refUID: includeRefUid
+            ? row[row.length - 2]
+            : "0x0000000000000000000000000000000000000000000000000000000000000000",
           data: encodedData,
           value: 0n,
         };
@@ -207,9 +207,6 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
 
       const transaction = await safe.createTransaction({
         transactions: [txData],
-        options: {
-          nonce: await safeApiKit.getNextNonce(safeAddress),
-        },
       });
 
       const signerAddress = await rpcSigner.getAddress();
@@ -285,7 +282,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         !state.schemaRecord?.revocable
       ) {
         throw new Error(
-          "Missing schemaEncoder, schema, easConfig, rpcSigner or publicClient"
+          "Missing schemaEncoder, schema, easConfig, rpcSigner or publicClient",
         );
       }
 
@@ -300,7 +297,7 @@ export const EasContextProvider: React.FC<EasProviderProps> = ({
         state.schema,
         state.schemaEncoder,
         state.schemaRecord.revocable,
-        publicClient
+        publicClient,
       );
 
       console.log("Creating attestations", request);

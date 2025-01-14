@@ -1,15 +1,12 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import Safe, { EthersAdapter } from "@safe-global/protocol-kit";
-
+import Safe from "@safe-global/protocol-kit";
 import SafeApiKit from "@safe-global/api-kit";
 import { SafeContext } from "../types/use-safe-return";
-import { ethers } from "ethers";
 import { useAccount } from "wagmi";
-import { useEthersSigner } from "../../ethers/hooks/useEthersSigner";
 import { useSafeConfig } from "../hooks/useSafeConfig";
 
 export const ReactSafeContext = React.createContext<SafeContext | undefined>(
-  undefined
+  undefined,
 );
 
 const initialState: SafeContext = {
@@ -27,8 +24,7 @@ export const SafeContextProvider: React.FC<SafeProviderProps> = ({
   address,
   children,
 }: SafeProviderProps) => {
-  const { chain } = useAccount();
-  const rpcSigner = useEthersSigner({ chainId: chain?.id });
+  const { chain, connector } = useAccount();
   const { address: userAddress } = useAccount();
   const safeConfig = useSafeConfig(chain?.id);
 
@@ -41,31 +37,9 @@ export const SafeContextProvider: React.FC<SafeProviderProps> = ({
     setState(initialState);
   }
 
-  function initializeEthersAdapter(): void {
-    if (!rpcSigner) return;
-    try {
-      const adapter = new EthersAdapter({
-        ethers,
-        signerOrProvider: rpcSigner,
-      });
-      setState((prev) => ({
-        ...prev,
-        ethersAdapter: adapter,
-        ethersAdapterError: undefined,
-      }));
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        ethersAdapter: undefined,
-        ethersAdapterError: error as Error,
-      }));
-      console.error(error);
-    }
-  }
-
   function initializeSafeApiKit(): void {
     try {
-      if (!state.ethersAdapter || !safeConfig || !chain?.id) return;
+      if (!safeConfig || !chain?.id) return;
       const apiKit = new SafeApiKit({ chainId: BigInt(chain.id) });
       setState((prev) => ({
         ...prev,
@@ -86,9 +60,8 @@ export const SafeContextProvider: React.FC<SafeProviderProps> = ({
     void (async (): Promise<void> => {
       try {
         if (!state.safeApiKit || !userAddress) return;
-        const ownerResponse = await state.safeApiKit.getSafesByOwner(
-          userAddress
-        );
+        const ownerResponse =
+          await state.safeApiKit.getSafesByOwner(userAddress);
         setState((prev) => ({
           ...prev,
           safes: ownerResponse.safes,
@@ -113,9 +86,12 @@ export const SafeContextProvider: React.FC<SafeProviderProps> = ({
   function initializeSafeInstance(): void {
     void (async (): Promise<void> => {
       try {
-        if (!state.ethersAdapter || !address || !selectedSafeInSafes) return;
-        const safeInstance = await Safe.create({
-          ethAdapter: state.ethersAdapter,
+        if (!address || !selectedSafeInSafes || !connector) return;
+        const provider = await connector.getProvider();
+        const safeInstance = await Safe.init({
+          //eslint-disable-next-line @typescript-eslint/no-explicit-any
+          provider: provider as any,
+          signer: userAddress,
           safeAddress: address,
         });
         setState((prev) => ({
@@ -159,13 +135,13 @@ export const SafeContextProvider: React.FC<SafeProviderProps> = ({
   }
 
   useEffect(resetState, [chain]);
-  useEffect(initializeEthersAdapter, [rpcSigner]);
-  useEffect(initializeSafeApiKit, [state.ethersAdapter, safeConfig]);
+  useEffect(initializeSafeApiKit, [safeConfig, chain]);
   useEffect(listSafesByOwner, [state.safeApiKit, userAddress]);
   useEffect(initializeSafeInstance, [
-    state.ethersAdapter,
     address,
     selectedSafeInSafes,
+    connector,
+    userAddress,
   ]);
   useEffect(loadOwnersAndThreshold, [state.safe, userAddress]);
 

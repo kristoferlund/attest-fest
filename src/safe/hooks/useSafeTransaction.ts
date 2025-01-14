@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { ExecuteSafeTransactionStateType } from "../types/execute-safe-transaction-state.type";
-import { SafeMultisigTransactionResponse } from "@safe-global/safe-core-sdk-types";
+import { SafeMultisigTransactionResponse } from "@safe-global/types-kit";
 import { errorHasMessage } from "../../eth/util/errorHasMessage";
 import { errorHasReason } from "../../eth/util/errorHasReason";
 import { errorMessage } from "../errorCodes";
@@ -70,7 +70,7 @@ export function useSafeTransaction({
       const isOwner = await safe.isOwner(userAddress);
       setMySignatureAwaited(
         isOwner &&
-          !transaction.confirmations?.find((c) => c.owner === userAddress)
+          !transaction.confirmations?.find((c) => c.owner === userAddress),
       );
     })();
   }
@@ -82,7 +82,7 @@ export function useSafeTransaction({
     void (async (): Promise<void> => {
       if (!transaction) return;
       const response = await fetch(
-        `${safeConfig?.serviceUrl}/api/v1/multisig-transactions/${transaction.safeTxHash}`
+        `${safeConfig?.serviceUrl}/api/v1/multisig-transactions/${transaction.safeTxHash}`,
       );
       if (response.ok) {
         const tx = (await response.json()) as SafeMultisigTransactionResponse;
@@ -107,7 +107,8 @@ export function useSafeTransaction({
       setExecuteState({ state: "executing" });
       try {
         const txResponse = await safe.executeTransaction(transaction);
-        await txResponse.transactionResponse?.wait();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (txResponse.transactionResponse as any)?.wait();
         setExecuteState({ state: "indexing" });
         setTimeout(awaitTransactionIndexing, 10000); // Check every 10 seconds if the transaction has been indexed
       } catch (e) {
@@ -131,7 +132,7 @@ export function useSafeTransaction({
             {
               method: "POST",
               body: JSON.stringify(tenderlySimulationRequest),
-            }
+            },
           );
 
           const json = await tenderlyResponse.json();
