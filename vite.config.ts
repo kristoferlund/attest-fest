@@ -1,16 +1,19 @@
 import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
 import rollupNodePolyFill from "rollup-plugin-polyfill-node";
-//import { visualizer } from "rollup-plugin-visualizer";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
 
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  base: "",
+  build: {
+    outDir: "dist",
+    rollupOptions: {
+      plugins: [rollupNodePolyFill()],
+    },
+  },
   optimizeDeps: {
     esbuildOptions: {
-      // Node.js global to browser globalThis
       define: {
         global: "globalThis",
       },
@@ -24,9 +27,5 @@ export default defineConfig({
       ],
     },
   },
-  build: {
-    rollupOptions: {
-      plugins: [rollupNodePolyFill()],
-    },
-  },
+  plugins: [react()],
 });
